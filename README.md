@@ -1,11 +1,3 @@
-# RunAnywhere React Native Starter App
-
-A comprehensive starter app demonstrating the capabilities of the [RunAnywhere SDK](https://www.npmjs.com/org/runanywhere) - a privacy-first, on-device AI SDK for React Native.
-
-![RunAnywhere](https://img.shields.io/badge/RunAnywhere-0.16.10-00D9FF)
-![React Native](https://img.shields.io/badge/React%20Native-0.76.5-61DAFB)
-![Platforms](https://img.shields.io/badge/Platforms-iOS%20%7C%20Android-green)
-
 ## ✨ Features
 
 This starter app showcases four main capabilities of the RunAnywhere SDK:
@@ -38,31 +30,18 @@ This starter app showcases four main capabilities of the RunAnywhere SDK:
 - Conversation history
 - Complete end-to-end voice interaction
 
-## 📦 SDK Packages Used
 
-This app uses three RunAnywhere packages:
-
-| Package | Purpose | NPM |
-|---------|---------|-----|
-| `@runanywhere/core` | Core SDK with infrastructure | [View on NPM](https://www.npmjs.com/package/@runanywhere/core) |
-| `@runanywhere/llamacpp` | LLM backend (LlamaCpp) | [View on NPM](https://www.npmjs.com/package/@runanywhere/llamacpp) |
-| `@runanywhere/onnx` | STT/TTS/VAD backend (ONNX) | [View on NPM](https://www.npmjs.com/package/@runanywhere/onnx) |
-
-## 🚀 Getting Started
 
 ### Quick Start
 
 ```bash
-# Clone and install
-git clone https://github.com/RunanywhereAI/react-native-starter-app.git
-cd react-native-starter-app
 npm install
+```
 
-# iOS (requires pod install first)
-cd ios && pod install && cd ..
-npx react-native run-ios
 
-# Android (no additional setup needed)
+
+# Android
+```bash
 npx react-native run-android
 ```
 
