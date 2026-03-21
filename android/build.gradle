@@ -32,36 +32,16 @@ subprojects {
             }
         }
     }
-}
 
-// =============================================================================
-// Fix: Node.js not found when running from Android Studio
-// Android Studio doesn't inherit terminal PATH, so we need to explicitly set it
-// =============================================================================
-def nodeDir = "/opt/homebrew/bin"
-def nodePath = "${nodeDir}/node"
-
-// Check if node exists in common locations
-if (!file(nodePath).exists()) {
-    if (file("/usr/local/bin/node").exists()) {
-        nodeDir = "/usr/local/bin"
-        nodePath = "/usr/local/bin/node"
-    } else if (file("/usr/bin/node").exists()) {
-        nodeDir = "/usr/bin"
-        nodePath = "/usr/bin/node"
-    }
-}
-
-// Set NODE_BINARY globally so React Native gradle plugin can find it
-ext.NODE_BINARY = nodePath
-
-// Fix PATH for codegen tasks using taskGraph
-gradle.taskGraph.whenReady { taskGraph ->
-    def fullPath = "${nodeDir}:/usr/local/bin:/usr/bin:" + (System.getenv("PATH") ?: "")
-    taskGraph.allTasks.each { task ->
-        if (task instanceof Exec) {
-            task.environment("PATH", fullPath)
-            task.environment("NODE_BINARY", nodePath)
+    // Force all subprojects to use the root project's AGP version
+    // This prevents "No matching variant" errors from old native modules
+    buildscript {
+        repositories {
+            google()
+            mavenCentral()
+        }
+        dependencies {
+            classpath("com.android.tools.build:gradle:8.12.0")
         }
     }
 }
