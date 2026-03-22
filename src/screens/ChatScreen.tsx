@@ -154,6 +154,7 @@ export const ChatScreen: React.FC = () => {
         accentColor={AppColors.accentCyan}
         isDownloading={modelService.isLLMDownloading}
         isLoading={modelService.isLLMLoading}
+        isDownloaded={modelService.isLLMDownloaded}
         progress={modelService.llmDownloadProgress}
         onLoad={modelService.downloadAndLoadLLM}
       />
@@ -209,7 +210,7 @@ export const ChatScreen: React.FC = () => {
           }}
         >
           <LinearGradient
-            colors={[AppColors.accentCyan, AppColors.accentViolet]}
+            colors={[AppColors.btnActiveStart, AppColors.btnActiveEnd]}
             style={styles.fabGradient}
           >
             <Text style={styles.fabIcon}>⬇</Text>
@@ -239,7 +240,7 @@ export const ChatScreen: React.FC = () => {
           ) : (
             <TouchableOpacity onPress={handleSend} disabled={!inputText.trim()}>
               <LinearGradient
-                colors={[AppColors.accentCyan, AppColors.accentViolet]}
+                colors={[AppColors.btnActiveStart, AppColors.btnActiveEnd]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={styles.sendButton}
@@ -312,6 +313,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     padding: 16,
+    paddingBottom: 100,
     backgroundColor: AppColors.surfaceCard + 'CC',
     borderTopWidth: 1,
     borderTopColor: AppColors.textMuted + '1A',
@@ -366,7 +368,7 @@ const styles = StyleSheet.create({
   },
   fab: {
     position: 'absolute',
-    bottom: 100,
+    bottom: 180,
     right: 20,
     width: 48,
     height: 48,

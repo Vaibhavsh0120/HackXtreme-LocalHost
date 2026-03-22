@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   StyleSheet,
 } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import { AppColors } from '../theme';
 
 interface ModelLoaderWidgetProps {
@@ -15,6 +16,7 @@ interface ModelLoaderWidgetProps {
   accentColor: string;
   isDownloading: boolean;
   isLoading: boolean;
+  isDownloaded?: boolean;
   progress: number;
   onLoad: () => void;
 }
@@ -25,6 +27,7 @@ export const ModelLoaderWidget: React.FC<ModelLoaderWidgetProps> = ({
   accentColor,
   isDownloading,
   isLoading,
+  isDownloaded,
   progress,
   onLoad,
 }) => {
@@ -61,7 +64,7 @@ export const ModelLoaderWidget: React.FC<ModelLoaderWidgetProps> = ({
                     styles.progressBar,
                     {
                       width: `${progress}%`,
-                      backgroundColor: accentColor,
+                      backgroundColor: AppColors.btnActiveStart,
                     },
                   ]}
                 />
@@ -71,12 +74,17 @@ export const ModelLoaderWidget: React.FC<ModelLoaderWidgetProps> = ({
         )}
 
         {!isDownloading && !isLoading && (
-          <TouchableOpacity 
-            onPress={onLoad} 
-            activeOpacity={0.8}
-            style={[styles.button, { backgroundColor: accentColor }]}
-          >
-            <Text style={styles.buttonText}>Download & Load Model</Text>
+          <TouchableOpacity onPress={onLoad} activeOpacity={0.8}>
+            <LinearGradient
+              colors={[AppColors.btnActiveStart, AppColors.btnActiveEnd]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.button}
+            >
+              <Text style={styles.buttonText}>
+                {isDownloaded ? (title.includes('LLM') ? 'Load LLM' : 'Load Model') : 'Download & Load Model'}
+              </Text>
+            </LinearGradient>
           </TouchableOpacity>
         )}
 

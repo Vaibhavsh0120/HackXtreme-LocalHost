@@ -171,6 +171,7 @@ export const SpeechToTextScreen: React.FC = () => {
         accentColor={AppColors.accentViolet}
         isDownloading={modelService.isSTTDownloading}
         isLoading={modelService.isSTTLoading}
+        isDownloaded={modelService.isSTTDownloaded}
         progress={modelService.sttDownloadProgress}
         onLoad={modelService.downloadAndLoadSTT}
       />
@@ -251,7 +252,7 @@ export const SpeechToTextScreen: React.FC = () => {
           activeOpacity={0.8}
         >
           <LinearGradient
-            colors={isRecording ? [AppColors.error, '#DC2626'] : [AppColors.accentViolet, '#7C3AED']}
+            colors={isRecording ? [AppColors.btnActiveStart, AppColors.btnActiveEnd] : [AppColors.btnInactiveStart, AppColors.btnInactiveEnd]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={styles.recordButton}
@@ -277,6 +278,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     padding: 24,
+    paddingBottom: 100,
   },
   recordingArea: {
     padding: 32,

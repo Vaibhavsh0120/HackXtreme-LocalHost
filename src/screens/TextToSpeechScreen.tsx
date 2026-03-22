@@ -128,6 +128,7 @@ export const TextToSpeechScreen: React.FC = () => {
         accentColor={AppColors.accentPink}
         isDownloading={modelService.isTTSDownloading}
         isLoading={modelService.isTTSLoading}
+        isDownloaded={modelService.isTTSDownloaded}
         progress={modelService.ttsDownloadProgress}
         onLoad={modelService.downloadAndLoadTTS}
       />
@@ -225,7 +226,7 @@ export const TextToSpeechScreen: React.FC = () => {
             style={styles.playButtonWrapper}
           >
             <LinearGradient
-              colors={[AppColors.accentPink, '#DB2777']}
+              colors={[AppColors.btnActiveStart, AppColors.btnActiveEnd]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={styles.playButton}
@@ -268,6 +269,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     padding: 24,
+    paddingBottom: 100,
   },
   inputCard: {
     backgroundColor: AppColors.surfaceCard,

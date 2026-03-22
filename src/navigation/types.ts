@@ -1,16 +1,14 @@
 import { NavigatorScreenParams } from '@react-navigation/native';
 
 export type MainTabParamList = {
-  HomeTab: undefined;
+  ChatTab: undefined;
+  ToolsTab: undefined;
+  SpeechTab: undefined;
+  VoiceTab: undefined;
+  PipelineTab: undefined;
   SettingsTab: undefined;
 };
 
 export type RootStackParamList = {
   MainTabs: NavigatorScreenParams<MainTabParamList>;
-  Home: undefined;
-  Chat: undefined;
-  ToolCalling: undefined;
-  SpeechToText: undefined;
-  TextToSpeech: undefined;
-  VoicePipeline: undefined;
 };

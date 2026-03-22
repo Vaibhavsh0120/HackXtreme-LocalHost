@@ -38,8 +38,8 @@ export const SettingsScreen: React.FC = () => {
   const getStorageInfo = useCallback(async () => {
     setIsCalculating(true);
     try {
-      const cachePath = RNFS.CachesDirectoryPath;
-      const size = await calculateDirectorySize(cachePath);
+      const docPath = RNFS.DocumentDirectoryPath;
+      const size = await calculateDirectorySize(docPath);
       setCacheSize(size);
     } catch (error) {
       console.error('Failed to calculate storage:', error);
@@ -54,8 +54,8 @@ export const SettingsScreen: React.FC = () => {
 
   const handleClearCache = async () => {
     Alert.alert(
-      'Clear Cache',
-      'Are you sure you want to clear the application cache? This will not delete your downloaded models, but may remove temporary files.',
+      'Clear Storage',
+      'Are you sure you want to clear all downloaded models and data? You will need to re-download them to use the AI.',
       [
         { text: 'Cancel', style: 'cancel' },
         {
@@ -64,15 +64,15 @@ export const SettingsScreen: React.FC = () => {
           onPress: async () => {
             setIsClearing(true);
             try {
-              const cachePath = RNFS.CachesDirectoryPath;
-              const files = await RNFS.readDir(cachePath);
+              const docPath = RNFS.DocumentDirectoryPath;
+              const files = await RNFS.readDir(docPath);
               for (const file of files) {
                 await RNFS.unlink(file.path).catch(e => console.log('Could not delete', file.path, e));
               }
               await getStorageInfo();
-              Alert.alert('Success', 'Cache cleared successfully.');
+              Alert.alert('Success', 'Storage cleared successfully.');
             } catch (error) {
-              Alert.alert('Error', 'Failed to clear cache.');
+              Alert.alert('Error', 'Failed to clear storage.');
               console.error(error);
             } finally {
               setIsClearing(false);
@@ -112,14 +112,14 @@ export const SettingsScreen: React.FC = () => {
           </View>
 
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Manage Storage</Text>
+            <Text style={styles.sectionTitle}>Manage AI Models</Text>
             <View style={styles.card}>
               <View style={styles.row}>
                 <View style={styles.iconContainer}>
                   <Text style={styles.icon}>💾</Text>
                 </View>
                 <View style={styles.info}>
-                  <Text style={styles.label}>Total Cache Used</Text>
+                  <Text style={styles.label}>Local Model Storage Used</Text>
                   {isCalculating ? (
                     <ActivityIndicator size="small" color={AppColors.accentCyan} style={styles.loader} />
                   ) : (
@@ -148,7 +148,7 @@ export const SettingsScreen: React.FC = () => {
                   ) : (
                     <>
                       <Text style={styles.actionIcon}>🗑️</Text>
-                      <Text style={styles.actionText}>Clear Cache</Text>
+                      <Text style={styles.actionText}>Clear All Models</Text>
                     </>
                   )}
                 </LinearGradient>
@@ -175,6 +175,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     padding: 24,
     paddingTop: 60,
+    paddingBottom: 100,
   },
   headerText: {
     marginBottom: 40,

@@ -42,6 +42,9 @@ interface ModelServiceState {
   isLLMDownloading: boolean;
   isSTTDownloading: boolean;
   isTTSDownloading: boolean;
+  isLLMDownloaded: boolean;
+  isSTTDownloaded: boolean;
+  isTTSDownloaded: boolean;
   
   llmDownloadProgress: number;
   sttDownloadProgress: number;
@@ -87,6 +90,10 @@ export const ModelServiceProvider: React.FC<ModelServiceProviderProps> = ({ chil
   const [isSTTDownloading, setIsSTTDownloading] = useState(false);
   const [isTTSDownloading, setIsTTSDownloading] = useState(false);
   
+  const [isLLMDownloaded, setIsLLMDownloaded] = useState(false);
+  const [isSTTDownloaded, setIsSTTDownloaded] = useState(false);
+  const [isTTSDownloaded, setIsTTSDownloaded] = useState(false);
+  
   const [llmDownloadProgress, setLLMDownloadProgress] = useState(0);
   const [sttDownloadProgress, setSTTDownloadProgress] = useState(0);
   const [ttsDownloadProgress, setTTSDownloadProgress] = useState(0);
@@ -116,6 +123,15 @@ export const ModelServiceProvider: React.FC<ModelServiceProviderProps> = ({ chil
       return false;
     }
   }, []);
+
+  React.useEffect(() => {
+    const initChecks = async () => {
+      setIsLLMDownloaded(await checkModelDownloaded(MODEL_IDS.llm));
+      setIsSTTDownloaded(await checkModelDownloaded(MODEL_IDS.stt));
+      setIsTTSDownloaded(await checkModelDownloaded(MODEL_IDS.tts));
+    };
+    initChecks();
+  }, [checkModelDownloaded]);
   
   // Download and load LLM
   const downloadAndLoadLLM = useCallback(async () => {
@@ -156,6 +172,7 @@ export const ModelServiceProvider: React.FC<ModelServiceProviderProps> = ({ chil
       if (localPathToLoad) {
         await RunAnywhere.loadModel(localPathToLoad);
         setIsLLMLoaded(true);
+        setIsLLMDownloaded(true);
       }
       setIsLLMLoading(false);
     } catch (error) {
@@ -203,6 +220,7 @@ export const ModelServiceProvider: React.FC<ModelServiceProviderProps> = ({ chil
       if (localPathToLoad) {
         await RunAnywhere.loadSTTModel(localPathToLoad, 'whisper');
         setIsSTTLoaded(true);
+        setIsSTTDownloaded(true);
       }
       setIsSTTLoading(false);
     } catch (error) {
@@ -250,6 +268,7 @@ export const ModelServiceProvider: React.FC<ModelServiceProviderProps> = ({ chil
       if (localPathToLoad) {
         await RunAnywhere.loadTTSModel(localPathToLoad, 'piper');
         setIsTTSLoaded(true);
+        setIsTTSDownloaded(true);
       }
       setIsTTSLoading(false);
     } catch (error) {
@@ -286,6 +305,9 @@ export const ModelServiceProvider: React.FC<ModelServiceProviderProps> = ({ chil
     isLLMDownloading,
     isSTTDownloading,
     isTTSDownloading,
+    isLLMDownloaded,
+    isSTTDownloaded,
+    isTTSDownloaded,
     llmDownloadProgress,
     sttDownloadProgress,
     ttsDownloadProgress,

@@ -3,23 +3,29 @@
  * Matching the Flutter app's beautiful theme
  */
 export const AppColors = {
-  // Primary gradient colors - Deep space with electric accents
-  primaryDark: '#0A0E1A',
-  primaryMid: '#141B2D',
-  surfaceCard: '#1C2438',
-  surfaceElevated: '#242F4A',
+  // Pure black and dark grays
+  primaryDark: '#000000',
+  primaryMid: '#0A0A0A',
+  surfaceCard: '#111111',
+  surfaceElevated: '#1A1A1A',
 
-  // Accent colors - Electric cyan, violet, and more
-  accentCyan: '#00D9FF',
-  accentViolet: '#8B5CF6',
-  accentPink: '#EC4899',
-  accentGreen: '#10B981',
-  accentOrange: '#F59E0B',
+  // Accent colors - Re-purposed to monochrome/classic aesthetic
+  accentCyan: '#FFFFFF', // Pure white
+  accentViolet: '#D4D4D4', // Light silver
+  accentPink: '#A3A3A3', // Mid gray
+  accentGreen: '#E5E5E5', // Off-white
+  accentOrange: '#737373', // Dark gray
+
+  // Button Gradients
+  btnActiveStart: '#333333',
+  btnActiveEnd: '#111111',
+  btnInactiveStart: '#525252',
+  btnInactiveEnd: '#2A2A2A',
 
   // Text colors
-  textPrimary: '#F1F5F9',
-  textSecondary: '#94A3B8',
-  textMuted: '#64748B',
+  textPrimary: '#FFFFFF',
+  textSecondary: '#A3A3A3',
+  textMuted: '#525252',
 
   // Status colors
   success: '#22C55E',

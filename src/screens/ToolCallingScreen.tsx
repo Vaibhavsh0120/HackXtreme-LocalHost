@@ -246,6 +246,7 @@ export const ToolCallingScreen: React.FC = () => {
         accentColor={AppColors.accentOrange}
         isDownloading={modelService.isLLMDownloading}
         isLoading={modelService.isLLMLoading}
+        isDownloaded={modelService.isLLMDownloaded}
         progress={modelService.llmDownloadProgress}
         onLoad={modelService.downloadAndLoadLLM}
       />
@@ -357,7 +358,7 @@ export const ToolCallingScreen: React.FC = () => {
           />
           <TouchableOpacity onPress={handleGenerate} disabled={!inputText.trim() || isRunning}>
             <LinearGradient
-              colors={[AppColors.accentOrange, '#E67E22']}
+              colors={[AppColors.btnActiveStart, AppColors.btnActiveEnd]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={[styles.sendButton, (!inputText.trim() || isRunning) && styles.sendButtonDisabled]}
@@ -577,9 +578,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 
-  // Input
   inputContainer: {
     padding: 12,
+    paddingBottom: 100,
     backgroundColor: AppColors.surfaceCard + 'CC',
     borderTopWidth: 1,
     borderTopColor: AppColors.textMuted + '1A',

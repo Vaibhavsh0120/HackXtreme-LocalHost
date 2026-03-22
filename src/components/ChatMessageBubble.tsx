@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import Markdown from 'react-native-markdown-display';
 import { AppColors } from '../theme';
 
 export interface ChatMessage {
@@ -37,15 +38,21 @@ export const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
           isError && styles.errorBubble,
         ]}
       >
-        <Text
-          style={[
-            styles.text,
-            isUser ? styles.userText : styles.assistantText,
-            isError && styles.errorText,
-          ]}
-        >
-          {text}
-        </Text>
+        {isUser ? (
+          <Text
+            style={[
+              styles.text,
+              styles.userText,
+              isError && styles.errorText,
+            ]}
+          >
+            {text}
+          </Text>
+        ) : (
+          <Markdown style={markdownStyles}>
+            {text}
+          </Markdown>
+        )}
 
         {!isUser && !isStreaming && (tokensPerSecond || totalTokens) && (
           <View style={styles.metricsContainer}>
@@ -106,7 +113,7 @@ const styles = StyleSheet.create({
     lineHeight: 21,
   },
   userText: {
-    color: '#FFFFFF',
+    color: AppColors.primaryDark,
   },
   assistantText: {
     color: AppColors.textPrimary,
@@ -132,5 +139,47 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: AppColors.accentCyan,
     marginTop: 2,
+  },
+});
+
+const markdownStyles = StyleSheet.create({
+  body: {
+    color: AppColors.textPrimary,
+    fontSize: 15,
+    lineHeight: 21,
+  },
+  code_inline: {
+    backgroundColor: AppColors.primaryMid,
+    color: AppColors.textPrimary,
+    fontFamily: 'monospace',
+    paddingHorizontal: 4,
+    borderRadius: 4,
+  },
+  code_block: {
+    backgroundColor: AppColors.primaryDark,
+    color: AppColors.textSecondary,
+    fontFamily: 'monospace',
+    padding: 12,
+    borderRadius: 8,
+    marginVertical: 8,
+  },
+  fence: {
+    backgroundColor: AppColors.primaryDark,
+    color: AppColors.textSecondary,
+    fontFamily: 'monospace',
+    padding: 12,
+    borderRadius: 8,
+    marginVertical: 8,
+  },
+  strong: {
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+  },
+  em: {
+    fontStyle: 'italic',
+  },
+  paragraph: {
+    marginTop: 0,
+    marginBottom: 8,
   },
 });

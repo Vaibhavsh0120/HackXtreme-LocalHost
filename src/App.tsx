@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { StatusBar, Text } from 'react-native';
+import { StatusBar, Text, View, Platform } from 'react-native';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 // Note: react-native-screens is shimmed in index.js for iOS New Architecture compatibility
@@ -11,7 +11,6 @@ import { RunAnywhere, SDKEnvironment } from '@runanywhere/core';
 import { ModelServiceProvider, registerDefaultModels } from './services/ModelService';
 import { AppColors } from './theme';
 import {
-  HomeScreen,
   ChatScreen,
   ToolCallingScreen,
   SpeechToTextScreen,
@@ -32,11 +31,21 @@ const MainTabs = () => {
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: AppColors.primaryDark,
-          borderTopColor: AppColors.textMuted + '1A',
+          position: 'absolute',
+          bottom: Platform.OS === 'ios' ? 24 : 16,
+          left: 20,
+          right: 20,
+          elevation: 0,
+          backgroundColor: AppColors.surfaceCard,
+          borderRadius: 32,
+          height: 64,
+          borderTopWidth: 0,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 10 },
+          shadowOpacity: 0.3,
+          shadowRadius: 20,
         },
-        tabBarActiveTintColor: AppColors.accentCyan,
-        tabBarInactiveTintColor: AppColors.textMuted,
+        tabBarShowLabel: false,
       }}
       screenListeners={{
         tabPress: () => {
@@ -48,14 +57,76 @@ const MainTabs = () => {
       }}
     >
       <Tab.Screen 
-        name="HomeTab" 
-        component={HomeScreen} 
-        options={{ tabBarLabel: 'Home', tabBarIcon: () => <Text style={{fontSize: 20}}>🏠</Text> }} 
+        name="ChatTab" 
+        component={ChatScreen} 
+        options={{ 
+          tabBarIcon: ({ focused }) => (
+             <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{fontSize: 22, color: focused ? AppColors.accentCyan : AppColors.textMuted}}>💬</Text>
+                {focused && <View style={{width: 4, height: 4, borderRadius: 2, backgroundColor: AppColors.accentCyan, marginTop: 4}} />}
+             </View>
+          ) 
+        }} 
+      />
+      <Tab.Screen 
+        name="ToolsTab" 
+        component={ToolCallingScreen} 
+        options={{ 
+          tabBarIcon: ({ focused }) => (
+             <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{fontSize: 22, color: focused ? AppColors.accentCyan : AppColors.textMuted}}>🛠</Text>
+                {focused && <View style={{width: 4, height: 4, borderRadius: 2, backgroundColor: AppColors.accentCyan, marginTop: 4}} />}
+             </View>
+          ) 
+        }} 
+      />
+      <Tab.Screen 
+        name="SpeechTab" 
+        component={SpeechToTextScreen} 
+        options={{ 
+          tabBarIcon: ({ focused }) => (
+             <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{fontSize: 22, color: focused ? AppColors.accentCyan : AppColors.textMuted}}>🎤</Text>
+                {focused && <View style={{width: 4, height: 4, borderRadius: 2, backgroundColor: AppColors.accentCyan, marginTop: 4}} />}
+             </View>
+          ) 
+        }} 
+      />
+      <Tab.Screen 
+        name="VoiceTab" 
+        component={TextToSpeechScreen} 
+        options={{ 
+          tabBarIcon: ({ focused }) => (
+             <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{fontSize: 22, color: focused ? AppColors.accentCyan : AppColors.textMuted}}>🔊</Text>
+                {focused && <View style={{width: 4, height: 4, borderRadius: 2, backgroundColor: AppColors.accentCyan, marginTop: 4}} />}
+             </View>
+          ) 
+        }} 
+      />
+      <Tab.Screen 
+        name="PipelineTab" 
+        component={VoicePipelineScreen} 
+        options={{ 
+          tabBarIcon: ({ focused }) => (
+             <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{fontSize: 22, color: focused ? AppColors.accentCyan : AppColors.textMuted}}>⚡</Text>
+                {focused && <View style={{width: 4, height: 4, borderRadius: 2, backgroundColor: AppColors.accentCyan, marginTop: 4}} />}
+             </View>
+          ) 
+        }} 
       />
       <Tab.Screen 
         name="SettingsTab" 
         component={SettingsScreen} 
-        options={{ tabBarLabel: 'Settings', tabBarIcon: () => <Text style={{fontSize: 20}}>⚙️</Text> }} 
+        options={{ 
+          tabBarIcon: ({ focused }) => (
+             <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{fontSize: 22, color: focused ? AppColors.accentCyan : AppColors.textMuted}}>⚙</Text>
+                {focused && <View style={{width: 4, height: 4, borderRadius: 2, backgroundColor: AppColors.accentCyan, marginTop: 4}} />}
+             </View>
+          ) 
+        }} 
       />
     </Tab.Navigator>
   );
@@ -118,31 +189,6 @@ const App: React.FC = () => {
               name="MainTabs"
               component={MainTabs}
               options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="Chat"
-              component={ChatScreen}
-              options={{ title: 'Chat' }}
-            />
-            <Stack.Screen
-              name="ToolCalling"
-              component={ToolCallingScreen}
-              options={{ title: 'Tool Calling' }}
-            />
-            <Stack.Screen
-              name="SpeechToText"
-              component={SpeechToTextScreen}
-              options={{ title: 'Speech to Text' }}
-            />
-            <Stack.Screen
-              name="TextToSpeech"
-              component={TextToSpeechScreen}
-              options={{ title: 'Text to Speech' }}
-            />
-            <Stack.Screen
-              name="VoicePipeline"
-              component={VoicePipelineScreen}
-              options={{ title: 'Voice Pipeline' }}
             />
           </Stack.Navigator>
         </NavigationContainer>

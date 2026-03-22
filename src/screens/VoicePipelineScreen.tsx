@@ -321,6 +321,11 @@ export const VoicePipelineScreen: React.FC = () => {
           modelService.isSTTLoading ||
           modelService.isTTSLoading
         }
+        isDownloaded={
+          modelService.isLLMDownloaded &&
+          modelService.isSTTDownloaded &&
+          modelService.isTTSDownloaded
+        }
         progress={
           (modelService.llmDownloadProgress +
             modelService.sttDownloadProgress +
@@ -429,8 +434,8 @@ export const VoicePipelineScreen: React.FC = () => {
           <LinearGradient
             colors={
               isActive
-                ? [AppColors.error, '#DC2626']
-                : [AppColors.accentGreen, '#059669']
+                ? [AppColors.btnActiveStart, AppColors.btnActiveEnd]
+                : [AppColors.btnInactiveStart, AppColors.btnInactiveEnd]
             }
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
@@ -459,6 +464,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     padding: 24,
+    paddingBottom: 100,
   },
   statusArea: {
     padding: 32,
