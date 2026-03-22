@@ -11,7 +11,9 @@ import {
   Platform,
   PermissionsAndroid,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import { RunAnywhere } from '@runanywhere/core';
 import { AppColors } from '../theme';
 import { useModelService } from '../services/ModelService';
@@ -23,6 +25,7 @@ const { NativeAudioModule } = NativeModules;
 
 export const SpeechToTextScreen: React.FC = () => {
   const modelService = useModelService();
+  const insets = useSafeAreaInsets();
   const [isRecording, setIsRecording] = useState(false);
   const [isTranscribing, setIsTranscribing] = useState(false);
   const [transcription, setTranscription] = useState('');
@@ -183,7 +186,7 @@ export const SpeechToTextScreen: React.FC = () => {
     <View style={styles.container}>
       <ScrollView
         style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top + 16 }]}
       >
         <PrivacyBadge label="Speech" />
 
@@ -251,7 +254,13 @@ export const SpeechToTextScreen: React.FC = () => {
       {/* Record Button */}
       <View style={styles.buttonContainer}>
         <TouchableOpacity
-          onPress={isRecording ? stopRecordingAndTranscribe : startRecording}
+          onPress={() => {
+            ReactNativeHapticFeedback.trigger('impactMedium', {
+              enableVibrateFallback: true,
+              ignoreAndroidSystemSettings: false,
+            });
+            isRecording ? stopRecordingAndTranscribe() : startRecording();
+          }}
           disabled={isTranscribing}
           activeOpacity={0.8}
         >

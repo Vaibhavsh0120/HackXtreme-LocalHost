@@ -10,7 +10,9 @@ import {
   NativeModules,
   Alert,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import RNFS from 'react-native-fs';
 import { RunAnywhere, VoiceSessionEvent, VoiceSessionHandle } from '@runanywhere/core';
 import { AppColors } from '../theme';
@@ -46,6 +48,7 @@ const MODEL_IDS = {
 
 export const VoicePipelineScreen: React.FC = () => {
   const modelService = useModelService();
+  const insets = useSafeAreaInsets();
   const [isActive, setIsActive] = useState(false);
   const [status, setStatus] = useState<string>('Ready');
   const [conversation, setConversation] = useState<ConversationMessage[]>([]);
@@ -342,7 +345,7 @@ export const VoicePipelineScreen: React.FC = () => {
     <View style={styles.container}>
       <ScrollView
         style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top + 16 }]}
       >
         <PrivacyBadge label="Pipeline" />
 
@@ -433,7 +436,13 @@ export const VoicePipelineScreen: React.FC = () => {
       {/* Control Button */}
       <View style={styles.buttonContainer}>
         <TouchableOpacity
-          onPress={isActive ? stopVoiceAgent : startVoiceAgent}
+          onPress={() => {
+            ReactNativeHapticFeedback.trigger('impactMedium', {
+              enableVibrateFallback: true,
+              ignoreAndroidSystemSettings: false,
+            });
+            isActive ? stopVoiceAgent() : startVoiceAgent();
+          }}
           activeOpacity={0.8}
         >
           <LinearGradient

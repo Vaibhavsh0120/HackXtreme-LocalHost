@@ -11,6 +11,7 @@ import {
   Platform,
   ActivityIndicator,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
 import {
   RunAnywhere,
@@ -126,6 +127,7 @@ interface LogEntry {
 
 export const ToolCallingScreen: React.FC = () => {
   const modelService = useModelService();
+  const insets = useSafeAreaInsets();
   const [inputText, setInputText] = useState('');
   const [isRunning, setIsRunning] = useState(false);
   const [logs, setLogs] = useState<LogEntry[]>([]);
@@ -256,7 +258,7 @@ export const ToolCallingScreen: React.FC = () => {
 
   return (
     <KeyboardAvoidingView
-      style={styles.container}
+      style={[styles.container, { paddingTop: insets.top + 16 }]}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
     >

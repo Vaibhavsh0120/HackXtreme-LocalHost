@@ -9,7 +9,9 @@ import {
   StyleSheet,
   NativeModules,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import RNFS from 'react-native-fs';
 import { RunAnywhere } from '@runanywhere/core';
 import { AppColors } from '../theme';
@@ -28,6 +30,7 @@ const SAMPLE_TEXTS = [
 
 export const TextToSpeechScreen: React.FC = () => {
   const modelService = useModelService();
+  const insets = useSafeAreaInsets();
   const [text, setText] = useState('');
   const [isSynthesizing, setIsSynthesizing] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -140,7 +143,7 @@ export const TextToSpeechScreen: React.FC = () => {
     <View style={styles.container}>
       <ScrollView
         style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top + 16 }]}
       >
         <PrivacyBadge label="Voice" />
 
@@ -182,7 +185,13 @@ export const TextToSpeechScreen: React.FC = () => {
             {[0.5, 0.75, 1.0, 1.5, 2.0].map((rate) => (
               <TouchableOpacity
                 key={rate}
-                onPress={() => setSpeechRate(rate)}
+                onPress={() => {
+                  setSpeechRate(rate);
+                  ReactNativeHapticFeedback.trigger('selection', {
+                    enableVibrateFallback: true,
+                    ignoreAndroidSystemSettings: false,
+                  });
+                }}
                 style={[
                   styles.rateButton,
                   speechRate === rate && styles.rateButtonActive,
@@ -226,7 +235,13 @@ export const TextToSpeechScreen: React.FC = () => {
 
           {/* Play Button */}
           <TouchableOpacity
-            onPress={isPlaying ? stopPlayback : synthesizeAndPlay}
+            onPress={() => {
+              ReactNativeHapticFeedback.trigger('impactMedium', {
+                enableVibrateFallback: true,
+                ignoreAndroidSystemSettings: false,
+              });
+              isPlaying ? stopPlayback() : synthesizeAndPlay();
+            }}
             disabled={isSynthesizing || !text.trim()}
             activeOpacity={0.8}
             style={styles.playButtonWrapper}

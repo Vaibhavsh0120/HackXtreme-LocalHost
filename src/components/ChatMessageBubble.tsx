@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import Animated, { FadeInUp, Layout } from 'react-native-reanimated';
 import Markdown from 'react-native-markdown-display';
 import { AppColors } from '../theme';
 
@@ -25,7 +26,9 @@ export const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
   const { text, isUser, tokensPerSecond, totalTokens, isError, wasCancelled } = message;
 
   return (
-    <View
+    <Animated.View
+      entering={FadeInUp.springify().mass(0.8)}
+      layout={Layout.springify().mass(0.8)}
       style={[
         styles.container,
         isUser ? styles.userContainer : styles.assistantContainer,
@@ -73,7 +76,7 @@ export const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
 
         {isStreaming && <Text style={styles.streamingIndicator}>▊</Text>}
       </View>
-    </View>
+    </Animated.View>
   );
 };
 
