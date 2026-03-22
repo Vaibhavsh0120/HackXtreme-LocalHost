@@ -10,5 +10,6 @@ export type MainTabParamList = {
 };
 
 export type RootStackParamList = {
+  Splash: undefined;
   MainTabs: NavigatorScreenParams<MainTabParamList>;
 };

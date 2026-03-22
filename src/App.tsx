@@ -19,6 +19,7 @@ import {
   VoicePipelineScreen,
   SettingsScreen,
 } from './screens';
+import { SplashScreen } from './screens';
 import { RootStackParamList, MainTabParamList } from './navigation/types';
 
 // Using JS-based stack navigator instead of native-stack
@@ -186,6 +187,11 @@ const App: React.FC = () => {
               ...TransitionPresets.SlideFromRightIOS,
             }}
           >
+            <Stack.Screen
+              name="Splash"
+              component={SplashScreen}
+              options={{ headerShown: false }}
+            />
             <Stack.Screen
               name="MainTabs"
               component={MainTabs}

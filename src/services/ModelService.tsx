@@ -62,12 +62,17 @@ interface ModelServiceState {
   
   isVoiceAgentReady: boolean;
   
+  // Initialization (splash screen)
+  isInitializing: boolean;
+  initializationStatus: string;
+  
   // Actions
   downloadAndLoadLLM: () => Promise<void>;
   downloadAndLoadSTT: () => Promise<void>;
   downloadAndLoadTTS: () => Promise<void>;
   downloadAndLoadAllModels: () => Promise<void>;
   unloadAllModels: () => Promise<void>;
+  autoLoadDownloadedModels: () => Promise<void>;
 }
 
 const ModelServiceContext = createContext<ModelServiceState | null>(null);
@@ -107,6 +112,10 @@ export const ModelServiceProvider: React.FC<ModelServiceProviderProps> = ({ chil
   const [isLLMLoaded, setIsLLMLoaded] = useState(false);
   const [isSTTLoaded, setIsSTTLoaded] = useState(false);
   const [isTTSLoaded, setIsTTSLoaded] = useState(false);
+  
+  // Initialization state
+  const [isInitializing, setIsInitializing] = useState(false);
+  const [initializationStatus, setInitializationStatus] = useState('');
   
   const isVoiceAgentReady = isLLMLoaded && isSTTLoaded && isTTSLoaded;
   
@@ -300,6 +309,60 @@ export const ModelServiceProvider: React.FC<ModelServiceProviderProps> = ({ chil
       console.error('Error unloading models:', error);
     }
   }, []);
+
+  // Auto-load downloaded models on startup (called from splash screen)
+  const autoLoadDownloadedModels = useCallback(async () => {
+    setIsInitializing(true);
+    try {
+      const savedPaths = await getSavedModelPaths();
+
+      // Load LLM if downloaded
+      const llmPath = savedPaths[MODEL_IDS.llm];
+      if (llmPath && (await RNFS.exists(llmPath))) {
+        setInitializationStatus('Loading language model...');
+        try {
+          await RunAnywhere.loadModel(llmPath);
+          setIsLLMLoaded(true);
+          setIsLLMDownloaded(true);
+        } catch (e) {
+          console.error('Auto-load LLM failed:', e);
+        }
+      }
+
+      // Load STT if downloaded
+      const sttPath = savedPaths[MODEL_IDS.stt];
+      if (sttPath && (await RNFS.exists(sttPath))) {
+        setInitializationStatus('Loading speech recognition...');
+        try {
+          await RunAnywhere.loadSTTModel(sttPath, 'whisper');
+          setIsSTTLoaded(true);
+          setIsSTTDownloaded(true);
+        } catch (e) {
+          console.error('Auto-load STT failed:', e);
+        }
+      }
+
+      // Load TTS if downloaded
+      const ttsPath = savedPaths[MODEL_IDS.tts];
+      if (ttsPath && (await RNFS.exists(ttsPath))) {
+        setInitializationStatus('Loading voice synthesis...');
+        try {
+          await RunAnywhere.loadTTSModel(ttsPath, 'piper');
+          setIsTTSLoaded(true);
+          setIsTTSDownloaded(true);
+        } catch (e) {
+          console.error('Auto-load TTS failed:', e);
+        }
+      }
+
+      setInitializationStatus('Ready');
+    } catch (error) {
+      console.error('Auto-load error:', error);
+      setInitializationStatus('Ready');
+    } finally {
+      setIsInitializing(false);
+    }
+  }, []);
   
   const value: ModelServiceState = {
     isLLMDownloading,
@@ -318,11 +381,14 @@ export const ModelServiceProvider: React.FC<ModelServiceProviderProps> = ({ chil
     isSTTLoaded,
     isTTSLoaded,
     isVoiceAgentReady,
+    isInitializing,
+    initializationStatus,
     downloadAndLoadLLM,
     downloadAndLoadSTT,
     downloadAndLoadTTS,
     downloadAndLoadAllModels,
     unloadAllModels,
+    autoLoadDownloadedModels,
   };
   
   return (
