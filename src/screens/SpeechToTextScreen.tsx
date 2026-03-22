@@ -15,6 +15,7 @@ import { RunAnywhere } from '@runanywhere/core';
 import { AppColors } from '../theme';
 import { useModelService } from '../services/ModelService';
 import { ModelLoaderWidget, AudioVisualizer } from '../components';
+import { requestMicrophonePermission } from '../utils/permissions';
 
 // Native Audio Module - records in WAV format (16kHz mono) optimal for Whisper STT
 const { NativeAudioModule } = NativeModules;
@@ -52,22 +53,11 @@ export const SpeechToTextScreen: React.FC = () => {
         return;
       }
 
-      // Request microphone permission on Android
-      if (Platform.OS === 'android') {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-          {
-            title: 'Microphone Permission',
-            message: 'This app needs access to your microphone for speech recognition.',
-            buttonNeutral: 'Ask Me Later',
-            buttonNegative: 'Cancel',
-            buttonPositive: 'OK',
-          }
-        );
-        if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-          Alert.alert('Permission Denied', 'Microphone permission is required for speech recognition.');
-          return;
-        }
+      // Request microphone permission for both iOS and Android
+      const hasPermission = await requestMicrophonePermission();
+      if (!hasPermission) {
+        Alert.alert('Permission Denied', 'Microphone permission is required for speech recognition.');
+        return;
       }
 
       console.warn('[STT] Starting native recording...');

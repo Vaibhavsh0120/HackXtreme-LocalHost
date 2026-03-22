@@ -8,8 +8,11 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import { RunAnywhere } from '@runanywhere/core';
 import { AppColors } from '../theme';
 import { useModelService } from '../services/ModelService';
@@ -21,22 +24,32 @@ export const ChatScreen: React.FC = () => {
   const [inputText, setInputText] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [currentResponse, setCurrentResponse] = useState('');
+  const [isScrolledUp, setIsScrolledUp] = useState(false);
   const flatListRef = useRef<FlatList>(null);
   const streamCancelRef = useRef<(() => void) | null>(null);
   const responseRef = useRef(''); // Track response for closure
 
   useEffect(() => {
-    // Scroll to bottom when messages change
-    if (messages.length > 0) {
+    // Scroll to bottom when messages change, but only if user hasn't scrolled up
+    if (messages.length > 0 && !isScrolledUp) {
       setTimeout(() => {
         flatListRef.current?.scrollToEnd({ animated: true });
       }, 100);
     }
   }, [messages, currentResponse]);
 
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
+    const paddingToBottom = 150; // Threshold before we consider them 'scrolled up'
+    const isCloseToBottom = layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
+    setIsScrolledUp(!isCloseToBottom);
+  };
+
   const handleSend = async () => {
     const text = inputText.trim();
     if (!text || isGenerating) return;
+
+    setIsScrolledUp(false); // Reset scroll tracking for new message
 
     // Add user message
     const userMessage: ChatMessage = {
@@ -65,16 +78,20 @@ export const ChatScreen: React.FC = () => {
         setCurrentResponse(responseRef.current);
       }
 
-      // Get final metrics
       const finalResult = await streamResult.result;
+
+      ReactNativeHapticFeedback.trigger('rigid', {
+        enableVibrateFallback: true,
+        ignoreAndroidSystemSettings: false,
+      });
 
       // Add assistant message (use ref to get final text due to closure)
       const assistantMessage: ChatMessage = {
         text: responseRef.current,
         isUser: false,
         timestamp: new Date(),
-        tokensPerSecond: finalResult.performanceMetrics?.tokensPerSecond,
-        totalTokens: finalResult.performanceMetrics?.totalTokens,
+        tokensPerSecond: (finalResult as any).performanceMetrics?.tokensPerSecond,
+        totalTokens: (finalResult as any).performanceMetrics?.totalTokens,
       };
       setMessages(prev => [...prev, assistantMessage]);
       setCurrentResponse('');
@@ -177,7 +194,27 @@ export const ChatScreen: React.FC = () => {
           keyExtractor={(_, index) => index.toString()}
           contentContainerStyle={styles.messageList}
           showsVerticalScrollIndicator={false}
+          onScroll={handleScroll}
+          scrollEventThrottle={16}
         />
+      )}
+
+      {/* Floating Action Button for Auto-Scroll */}
+      {isGenerating && isScrolledUp && (
+        <TouchableOpacity
+          style={styles.fab}
+          onPress={() => {
+            setIsScrolledUp(false);
+            flatListRef.current?.scrollToEnd({ animated: true });
+          }}
+        >
+          <LinearGradient
+            colors={[AppColors.accentCyan, AppColors.accentViolet]}
+            style={styles.fabGradient}
+          >
+            <Text style={styles.fabIcon}>⬇</Text>
+          </LinearGradient>
+        </TouchableOpacity>
       )}
 
       {/* Input Area */}
@@ -326,5 +363,27 @@ const styles = StyleSheet.create({
   stopIconText: {
     fontSize: 20,
     color: AppColors.error,
+  },
+  fab: {
+    position: 'absolute',
+    bottom: 100,
+    right: 20,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    elevation: 8,
+    shadowColor: AppColors.accentCyan,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+  },
+  fabGradient: {
+    flex: 1,
+    borderRadius: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  fabIcon: {
+    fontSize: 20,
   },
 });

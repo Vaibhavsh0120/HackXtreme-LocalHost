@@ -1,5 +1,4 @@
 {
-  "extends": "@react-native/typescript-config/tsconfig.json",
   "compilerOptions": {
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
@@ -11,6 +10,7 @@
     "noEmit": true,
     "strict": true,
     "target": "esnext",
+    "module": "esnext",
     "resolveJsonModule": true,
     "skipLibCheck": true
   },

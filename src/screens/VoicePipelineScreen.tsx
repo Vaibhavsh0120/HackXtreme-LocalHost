@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Platform,
   NativeModules,
+  Alert,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import RNFS from 'react-native-fs';
@@ -14,6 +15,7 @@ import { RunAnywhere, VoiceSessionEvent, VoiceSessionHandle } from '@runanywhere
 import { AppColors } from '../theme';
 import { useModelService } from '../services/ModelService';
 import { ModelLoaderWidget, AudioVisualizer } from '../components';
+import { requestMicrophonePermission } from '../utils/permissions';
 
 // Conditionally import Sound - disabled on iOS via react-native.config.js
 let Sound: any = null;
@@ -55,7 +57,7 @@ export const VoicePipelineScreen: React.FC = () => {
 
   // Handle voice session events per docs:
   // https://docs.runanywhere.ai/react-native/voice-agent#voicesessionevent
-  const handleVoiceEvent = useCallback((event: VoiceSessionEvent) => {
+  const handleVoiceEvent = useCallback((event: any) => {
     switch (event.type) {
       case 'sessionStarted':
         setStatus('Listening...');
@@ -235,12 +237,18 @@ export const VoicePipelineScreen: React.FC = () => {
   // Start voice session per docs:
   // https://docs.runanywhere.ai/react-native/voice-agent#startvoicesession
   const startVoiceAgent = async () => {
+    const hasPermission = await requestMicrophonePermission();
+    if (!hasPermission) {
+      Alert.alert('Permission Denied', 'Microphone permission is required for the voice agent.');
+      return;
+    }
+    
     setIsActive(true);
     setStatus('Starting...');
 
     try {
       // Per docs: Use startVoiceSession with VoiceSessionConfig and callback
-      sessionRef.current = await RunAnywhere.startVoiceSession(
+      sessionRef.current = await (RunAnywhere as any).startVoiceSession(
         {
           agentConfig: {
             llmModelId: MODEL_IDS.llm,
@@ -256,7 +264,7 @@ export const VoicePipelineScreen: React.FC = () => {
           vadSensitivity: 0.5,
           speechTimeout: 3000, // 3 seconds timeout for speech
         },
-        handleVoiceEvent
+        handleVoiceEvent as any
       );
     } catch (error) {
       console.error('Voice agent error:', error);

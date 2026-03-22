@@ -110,21 +110,21 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           <View style={styles.infoSection}>
             <View style={styles.infoRow}>
               <Text style={styles.infoIcon}>🤖</Text>
-              <Text style={styles.infoLabel}>LLM</Text>
+              <Text style={styles.infoLabel}>Text Model</Text>
               <View style={{ flex: 1 }} />
-              <Text style={styles.infoValue}>SmolLM2 360M</Text>
+              <Text style={styles.infoValue}>Smart Text AI</Text>
             </View>
             <View style={styles.infoRow}>
               <Text style={styles.infoIcon}>🎤</Text>
-              <Text style={styles.infoLabel}>STT</Text>
+              <Text style={styles.infoLabel}>Transcription</Text>
               <View style={{ flex: 1 }} />
-              <Text style={styles.infoValue}>Whisper Tiny</Text>
+              <Text style={styles.infoValue}>Quick Voice Recognition</Text>
             </View>
             <View style={styles.infoRow}>
               <Text style={styles.infoIcon}>🔊</Text>
-              <Text style={styles.infoLabel}>TTS</Text>
+              <Text style={styles.infoLabel}>Speech</Text>
               <View style={{ flex: 1 }} />
-              <Text style={styles.infoValue}>Piper TTS</Text>
+              <Text style={styles.infoValue}>Clear AI Voice</Text>
             </View>
           </View>
         </ScrollView>

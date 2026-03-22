@@ -2,6 +2,32 @@ import React, { createContext, useContext, useState, useCallback } from 'react';
 import { RunAnywhere, ModelCategory } from '@runanywhere/core';
 import { LlamaCPP } from '@runanywhere/llamacpp';
 import { ONNX, ModelArtifactType } from '@runanywhere/onnx';
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
+import RNFS from 'react-native-fs';
+
+const MODEL_PATHS_FILE = `${RNFS.DocumentDirectoryPath}/runanywhere_models.json`;
+
+const getSavedModelPaths = async () => {
+  try {
+    if (await RNFS.exists(MODEL_PATHS_FILE)) {
+      const content = await RNFS.readFile(MODEL_PATHS_FILE, 'utf8');
+      return JSON.parse(content);
+    }
+  } catch (e) {
+    console.error('Error reading model paths:', e);
+  }
+  return {};
+};
+
+const saveModelPath = async (id: string, path: string) => {
+  try {
+    const data = await getSavedModelPaths();
+    data[id] = path;
+    await RNFS.writeFile(MODEL_PATHS_FILE, JSON.stringify(data), 'utf8');
+  } catch (e) {
+    console.error('Error saving model path:', e);
+  }
+};
 
 // Model IDs - matching sample app model registry
 // See: /Users/shubhammalhotra/Desktop/test-fresh/runanywhere-sdks/examples/react-native/RunAnywhereAI/App.tsx
@@ -77,11 +103,15 @@ export const ModelServiceProvider: React.FC<ModelServiceProviderProps> = ({ chil
   
   const isVoiceAgentReady = isLLMLoaded && isSTTLoaded && isTTSLoaded;
   
-  // Check if model is downloaded (per docs: use getModelInfo and check localPath)
+  // Check if model is downloaded by looking at our persisted JSON and RNFS.exists
   const checkModelDownloaded = useCallback(async (modelId: string): Promise<boolean> => {
     try {
-      const modelInfo = await RunAnywhere.getModelInfo(modelId);
-      return !!modelInfo?.localPath;
+      const savedPaths = await getSavedModelPaths();
+      const path = savedPaths[modelId];
+      if (path && (await RNFS.exists(path))) {
+        return true;
+      }
+      return false;
     } catch {
       return false;
     }
@@ -94,6 +124,8 @@ export const ModelServiceProvider: React.FC<ModelServiceProviderProps> = ({ chil
     try {
       const isDownloaded = await checkModelDownloaded(MODEL_IDS.llm);
       
+      let localPathToLoad: string | undefined;
+
       if (!isDownloaded) {
         setIsLLMDownloading(true);
         setLLMDownloadProgress(0);
@@ -104,13 +136,25 @@ export const ModelServiceProvider: React.FC<ModelServiceProviderProps> = ({ chil
         });
         
         setIsLLMDownloading(false);
+        ReactNativeHapticFeedback.trigger('notificationSuccess', {
+          enableVibrateFallback: true,
+          ignoreAndroidSystemSettings: false,
+        });
+
+        const newInfo = await RunAnywhere.getModelInfo(MODEL_IDS.llm);
+        if (newInfo?.localPath) {
+          await saveModelPath(MODEL_IDS.llm, newInfo.localPath);
+          localPathToLoad = newInfo.localPath;
+        }
+      } else {
+        const savedPaths = await getSavedModelPaths();
+        localPathToLoad = savedPaths[MODEL_IDS.llm];
       }
       
-      // Load the model (per docs: get localPath first, then load)
+      // Load the model
       setIsLLMLoading(true);
-      const modelInfo = await RunAnywhere.getModelInfo(MODEL_IDS.llm);
-      if (modelInfo?.localPath) {
-        await RunAnywhere.loadModel(modelInfo.localPath);
+      if (localPathToLoad) {
+        await RunAnywhere.loadModel(localPathToLoad);
         setIsLLMLoaded(true);
       }
       setIsLLMLoading(false);
@@ -128,6 +172,8 @@ export const ModelServiceProvider: React.FC<ModelServiceProviderProps> = ({ chil
     try {
       const isDownloaded = await checkModelDownloaded(MODEL_IDS.stt);
       
+      let localPathToLoad: string | undefined;
+
       if (!isDownloaded) {
         setIsSTTDownloading(true);
         setSTTDownloadProgress(0);
@@ -137,13 +183,25 @@ export const ModelServiceProvider: React.FC<ModelServiceProviderProps> = ({ chil
         });
         
         setIsSTTDownloading(false);
+        ReactNativeHapticFeedback.trigger('notificationSuccess', {
+          enableVibrateFallback: true,
+          ignoreAndroidSystemSettings: false,
+        });
+
+        const newInfo = await RunAnywhere.getModelInfo(MODEL_IDS.stt);
+        if (newInfo?.localPath) {
+          await saveModelPath(MODEL_IDS.stt, newInfo.localPath);
+          localPathToLoad = newInfo.localPath;
+        }
+      } else {
+        const savedPaths = await getSavedModelPaths();
+        localPathToLoad = savedPaths[MODEL_IDS.stt];
       }
       
-      // Load the STT model (per docs: loadSTTModel(localPath, 'whisper'))
+      // Load the STT model
       setIsSTTLoading(true);
-      const modelInfo = await RunAnywhere.getModelInfo(MODEL_IDS.stt);
-      if (modelInfo?.localPath) {
-        await RunAnywhere.loadSTTModel(modelInfo.localPath, 'whisper');
+      if (localPathToLoad) {
+        await RunAnywhere.loadSTTModel(localPathToLoad, 'whisper');
         setIsSTTLoaded(true);
       }
       setIsSTTLoading(false);
@@ -161,6 +219,8 @@ export const ModelServiceProvider: React.FC<ModelServiceProviderProps> = ({ chil
     try {
       const isDownloaded = await checkModelDownloaded(MODEL_IDS.tts);
       
+      let localPathToLoad: string | undefined;
+
       if (!isDownloaded) {
         setIsTTSDownloading(true);
         setTTSDownloadProgress(0);
@@ -170,13 +230,25 @@ export const ModelServiceProvider: React.FC<ModelServiceProviderProps> = ({ chil
         });
         
         setIsTTSDownloading(false);
+        ReactNativeHapticFeedback.trigger('notificationSuccess', {
+          enableVibrateFallback: true,
+          ignoreAndroidSystemSettings: false,
+        });
+
+        const newInfo = await RunAnywhere.getModelInfo(MODEL_IDS.tts);
+        if (newInfo?.localPath) {
+          await saveModelPath(MODEL_IDS.tts, newInfo.localPath);
+          localPathToLoad = newInfo.localPath;
+        }
+      } else {
+        const savedPaths = await getSavedModelPaths();
+        localPathToLoad = savedPaths[MODEL_IDS.tts];
       }
       
-      // Load the TTS model (per docs: loadTTSModel(localPath, 'piper'))
+      // Load the TTS model
       setIsTTSLoading(true);
-      const modelInfo = await RunAnywhere.getModelInfo(MODEL_IDS.tts);
-      if (modelInfo?.localPath) {
-        await RunAnywhere.loadTTSModel(modelInfo.localPath, 'piper');
+      if (localPathToLoad) {
+        await RunAnywhere.loadTTSModel(localPathToLoad, 'piper');
         setIsTTSLoaded(true);
       }
       setIsTTSLoading(false);

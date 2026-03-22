@@ -2,7 +2,9 @@ import 'react-native-gesture-handler'; // Must be at the top!
 import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
-import { StatusBar } from 'react-native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { StatusBar, Text } from 'react-native';
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 // Note: react-native-screens is shimmed in index.js for iOS New Architecture compatibility
 import { RunAnywhere, SDKEnvironment } from '@runanywhere/core';
@@ -15,12 +17,49 @@ import {
   SpeechToTextScreen,
   TextToSpeechScreen,
   VoicePipelineScreen,
+  SettingsScreen,
 } from './screens';
-import { RootStackParamList } from './navigation/types';
+import { RootStackParamList, MainTabParamList } from './navigation/types';
 
 // Using JS-based stack navigator instead of native-stack
 // to avoid react-native-screens setColor crash with New Architecture
 const Stack = createStackNavigator<RootStackParamList>();
+const Tab = createBottomTabNavigator<MainTabParamList>();
+
+const MainTabs = () => {
+  return (
+    <Tab.Navigator
+      screenOptions={{
+        headerShown: false,
+        tabBarStyle: {
+          backgroundColor: AppColors.primaryDark,
+          borderTopColor: AppColors.textMuted + '1A',
+        },
+        tabBarActiveTintColor: AppColors.accentCyan,
+        tabBarInactiveTintColor: AppColors.textMuted,
+      }}
+      screenListeners={{
+        tabPress: () => {
+          ReactNativeHapticFeedback.trigger('impactLight', {
+            enableVibrateFallback: true,
+            ignoreAndroidSystemSettings: false,
+          });
+        },
+      }}
+    >
+      <Tab.Screen 
+        name="HomeTab" 
+        component={HomeScreen} 
+        options={{ tabBarLabel: 'Home', tabBarIcon: () => <Text style={{fontSize: 20}}>🏠</Text> }} 
+      />
+      <Tab.Screen 
+        name="SettingsTab" 
+        component={SettingsScreen} 
+        options={{ tabBarLabel: 'Settings', tabBarIcon: () => <Text style={{fontSize: 20}}>⚙️</Text> }} 
+      />
+    </Tab.Navigator>
+  );
+};
 
 const App: React.FC = () => {
   useEffect(() => {
@@ -76,8 +115,8 @@ const App: React.FC = () => {
             }}
           >
             <Stack.Screen
-              name="Home"
-              component={HomeScreen}
+              name="MainTabs"
+              component={MainTabs}
               options={{ headerShown: false }}
             />
             <Stack.Screen
