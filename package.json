@@ -17,6 +17,7 @@
     "@runanywhere/core": "^0.18.1",
     "@runanywhere/llamacpp": "^0.18.1",
     "@runanywhere/onnx": "^0.18.1",
+    "lucide-react-native": "^0.577.0",
     "react": "19.2.0",
     "react-native": "0.83.1",
     "react-native-fs": "^2.20.0",
@@ -28,7 +29,8 @@
     "react-native-nitro-modules": "^0.31.10",
     "react-native-permissions": "^5.5.1",
     "react-native-safe-area-context": "~5.6.2",
-    "react-native-sound": "^0.13.0"
+    "react-native-sound": "^0.13.0",
+    "react-native-svg": "^15.15.4"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
@@ -45,6 +47,7 @@
     "@types/react-test-renderer": "^18.3.0",
     "eslint": "^8.57.0",
     "prettier": "^3.4.2",
+    "sharp": "^0.34.5",
     "typescript": "~5.9.2"
   },
   "engines": {

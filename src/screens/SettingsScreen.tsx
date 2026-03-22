@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { Database, Trash2 } from 'lucide-react-native';
 import {
   View,
   Text,
@@ -116,7 +117,7 @@ export const SettingsScreen: React.FC = () => {
             <View style={styles.card}>
               <View style={styles.row}>
                 <View style={styles.iconContainer}>
-                  <Text style={styles.icon}>💾</Text>
+                  <Database size={24} color={AppColors.accentCyan} />
                 </View>
                 <View style={styles.info}>
                   <Text style={styles.label}>Local Model Storage Used</Text>
@@ -147,7 +148,7 @@ export const SettingsScreen: React.FC = () => {
                     <ActivityIndicator size="small" color="#FFF" />
                   ) : (
                     <>
-                      <Text style={styles.actionIcon}>🗑️</Text>
+                      <Trash2 size={18} color="#FFF" />
                       <Text style={styles.actionText}>Clear All Models</Text>
                     </>
                   )}
@@ -222,9 +223,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 16,
   },
-  icon: {
-    fontSize: 24,
-  },
+  icon: {},
   info: {
     flex: 1,
     justifyContent: 'center',
@@ -266,9 +265,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     gap: 8,
   },
-  actionIcon: {
-    fontSize: 16,
-  },
+  actionIcon: {},
   actionText: {
     fontSize: 16,
     fontWeight: '600',

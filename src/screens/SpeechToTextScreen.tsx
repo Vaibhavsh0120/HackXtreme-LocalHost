@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { Mic, Square, Loader2, Trash2, Clock } from 'lucide-react-native';
 import {
   View,
   Text,
@@ -199,14 +200,14 @@ export const SpeechToTextScreen: React.FC = () => {
           ) : isTranscribing ? (
             <>
               <View style={styles.loadingContainer}>
-                <Text style={styles.loadingIcon}>⏳</Text>
+                <Loader2 size={48} color={AppColors.accentViolet} />
               </View>
               <Text style={styles.statusTitle}>Transcribing...</Text>
             </>
           ) : (
             <>
               <View style={styles.micContainer}>
-                <Text style={styles.micIcon}>🎤</Text>
+                <Mic size={48} color={AppColors.accentViolet} />
               </View>
               <Text style={styles.statusTitle}>Tap to Record</Text>
               <Text style={styles.statusSubtitle}>On-device speech recognition (WAV 16kHz)</Text>
@@ -231,7 +232,8 @@ export const SpeechToTextScreen: React.FC = () => {
           <View style={styles.historySection}>
             <View style={styles.historyHeader}>
               <Text style={styles.historyTitle}>History</Text>
-              <TouchableOpacity onPress={handleClearHistory}>
+              <TouchableOpacity onPress={handleClearHistory} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Trash2 size={16} color={AppColors.accentViolet} style={{ marginRight: 4 }} />
                 <Text style={styles.clearButton}>Clear</Text>
               </TouchableOpacity>
             </View>
@@ -257,7 +259,7 @@ export const SpeechToTextScreen: React.FC = () => {
             end={{ x: 1, y: 0 }}
             style={styles.recordButton}
           >
-            <Text style={styles.recordIcon}>{isRecording ? '⏹' : '🎤'}</Text>
+            {isRecording ? <Square fill="#FFF" color="#FFF" size={24} /> : <Mic color="#FFF" size={24} />}
             <Text style={styles.recordButtonText}>
               {isRecording ? 'Stop Recording' : 'Start Recording'}
             </Text>
@@ -307,9 +309,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 24,
   },
-  micIcon: {
-    fontSize: 48,
-  },
+  micIcon: {},
   loadingContainer: {
     width: 80,
     height: 80,
@@ -317,9 +317,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 24,
   },
-  loadingIcon: {
-    fontSize: 48,
-  },
+  loadingIcon: {},
   statusTitle: {
     fontSize: 20,
     fontWeight: '700',
@@ -389,6 +387,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     padding: 24,
+    paddingBottom: 110,
     backgroundColor: AppColors.surfaceCard + 'CC',
     borderTopWidth: 1,
     borderTopColor: AppColors.textMuted + '1A',
@@ -406,9 +405,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.4,
     shadowRadius: 20,
   },
-  recordIcon: {
-    fontSize: 28,
-  },
+  recordIcon: {},
   recordButtonText: {
     fontSize: 16,
     fontWeight: '700',

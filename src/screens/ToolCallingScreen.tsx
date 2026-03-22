@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { Wrench, Send, Info, MessageSquare, Package, Bot, XCircle } from 'lucide-react-native';
 import {
   View,
   Text,
@@ -299,7 +300,7 @@ export const ToolCallingScreen: React.FC = () => {
       >
         {logs.length === 0 ? (
           <View style={styles.emptyState}>
-            <Text style={styles.emptyIcon}>🛠</Text>
+            <Wrench size={56} color={AppColors.accentOrange} strokeWidth={1.5} style={{ marginBottom: 16 }} />
             <Text style={styles.emptyTitle}>Tool Calling Test</Text>
             <Text style={styles.emptySubtitle}>
               Register tools, then ask the model to use them.{'\n'}
@@ -310,7 +311,10 @@ export const ToolCallingScreen: React.FC = () => {
           logs.map(log => (
             <View key={log.id} style={[styles.logEntry, styles[`log_${log.type}`]]}>
               <View style={styles.logHeader}>
-                <Text style={styles.logIcon}>{LOG_ICONS[log.type]}</Text>
+                {(() => {
+                  const Icon = LOG_ICONS[log.type];
+                  return <Icon size={16} color={AppColors.textPrimary} />;
+                })()}
                 <Text style={styles.logTitle}>{log.title}</Text>
                 <Text style={styles.logTime}>
                   {log.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
@@ -363,7 +367,7 @@ export const ToolCallingScreen: React.FC = () => {
               end={{ x: 1, y: 0 }}
               style={[styles.sendButton, (!inputText.trim() || isRunning) && styles.sendButtonDisabled]}
             >
-              <Text style={styles.sendIcon}>▶</Text>
+              <Send size={18} color="#FFFFFF" strokeWidth={2.5} />
             </LinearGradient>
           </TouchableOpacity>
         </View>
@@ -374,13 +378,13 @@ export const ToolCallingScreen: React.FC = () => {
 
 // ─── Constants ─────────────────────────────────────────────────
 
-const LOG_ICONS: Record<LogType, string> = {
-  info: 'ℹ️',
-  prompt: '💬',
-  tool_call: '🔧',
-  tool_result: '📦',
-  response: '🤖',
-  error: '❌',
+const LOG_ICONS: Record<LogType, React.ComponentType<any>> = {
+  info: Info,
+  prompt: MessageSquare,
+  tool_call: Wrench,
+  tool_result: Package,
+  response: Bot,
+  error: XCircle,
 };
 
 // ─── Styles ────────────────────────────────────────────────────
@@ -465,10 +469,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 80,
   },
-  emptyIcon: {
-    fontSize: 56,
-    marginBottom: 16,
-  },
+  emptyIcon: {},
   emptyTitle: {
     fontSize: 22,
     fontWeight: '700',
@@ -495,9 +496,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 6,
   },
-  logIcon: {
-    fontSize: 14,
-  },
+  logIcon: {},
   logTitle: {
     flex: 1,
     fontSize: 13,
@@ -610,8 +609,5 @@ const styles = StyleSheet.create({
   sendButtonDisabled: {
     opacity: 0.4,
   },
-  sendIcon: {
-    fontSize: 18,
-    color: '#FFFFFF',
-  },
+  sendIcon: {},
 });

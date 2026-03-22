@@ -1,4 +1,5 @@
 import React, { useState, useRef, useCallback } from 'react';
+import { Sparkles, Square, User, Bot } from 'lucide-react-native';
 import {
   View,
   Text,
@@ -358,7 +359,7 @@ export const VoicePipelineScreen: React.FC = () => {
           ) : (
             <>
               <View style={styles.agentIconContainer}>
-                <Text style={styles.agentIcon}>✨</Text>
+                <Sparkles size={48} color={AppColors.accentGreen} />
               </View>
               <Text style={styles.statusText}>Voice Agent</Text>
               <Text style={styles.statusSubtitle}>
@@ -388,9 +389,11 @@ export const VoicePipelineScreen: React.FC = () => {
                 ]}
               >
                 <View style={styles.messageHeader}>
-                  <Text style={styles.roleIcon}>
-                    {message.role === 'user' ? '👤' : '🤖'}
-                  </Text>
+                  {message.role === 'user' ? (
+                    <User size={18} color={AppColors.textSecondary} style={{ marginRight: 8 }} />
+                  ) : (
+                    <Bot size={18} color={AppColors.textSecondary} style={{ marginRight: 8 }} />
+                  )}
                   <Text style={styles.roleText}>
                     {message.role === 'user' ? 'You' : 'Assistant'}
                   </Text>
@@ -406,19 +409,19 @@ export const VoicePipelineScreen: React.FC = () => {
           <View style={styles.infoCard}>
             <Text style={styles.infoTitle}>How it works:</Text>
             <View style={styles.infoStep}>
-              <Text style={styles.stepNumber}>1️⃣</Text>
+              <Text style={styles.stepNumber}>1.</Text>
               <Text style={styles.stepText}>Voice Activity Detection (VAD) listens for speech</Text>
             </View>
             <View style={styles.infoStep}>
-              <Text style={styles.stepNumber}>2️⃣</Text>
+              <Text style={styles.stepNumber}>2.</Text>
               <Text style={styles.stepText}>Speech is transcribed (STT with Whisper)</Text>
             </View>
             <View style={styles.infoStep}>
-              <Text style={styles.stepNumber}>3️⃣</Text>
+              <Text style={styles.stepNumber}>3.</Text>
               <Text style={styles.stepText}>AI generates response (LLM with SmolLM2)</Text>
             </View>
             <View style={styles.infoStep}>
-              <Text style={styles.stepNumber}>4️⃣</Text>
+              <Text style={styles.stepNumber}>4.</Text>
               <Text style={styles.stepText}>Response is spoken (TTS with Piper)</Text>
             </View>
           </View>
@@ -441,9 +444,7 @@ export const VoicePipelineScreen: React.FC = () => {
             end={{ x: 1, y: 0 }}
             style={styles.controlButton}
           >
-            <Text style={styles.controlIcon}>
-              {isActive ? '⏹' : '✨'}
-            </Text>
+            {isActive ? <Square size={28} fill="#FFF" color="#FFF" /> : <Sparkles size={28} color="#FFF" />}
             <Text style={styles.controlButtonText}>
               {isActive ? 'Stop Agent' : 'Start Voice Agent'}
             </Text>
@@ -493,9 +494,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 24,
   },
-  agentIcon: {
-    fontSize: 48,
-  },
+  agentIcon: {},
   statusText: {
     fontSize: 20,
     fontWeight: '700',
@@ -548,10 +547,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 8,
   },
-  roleIcon: {
-    fontSize: 18,
-    marginRight: 8,
-  },
+  roleIcon: {},
   roleText: {
     fontSize: 12,
     fontWeight: '600',
@@ -582,7 +578,9 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   stepNumber: {
-    fontSize: 20,
+    fontSize: 16,
+    fontWeight: '700',
+    color: AppColors.textSecondary,
     marginRight: 12,
   },
   stepText: {
@@ -592,6 +590,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     padding: 24,
+    paddingBottom: 110,
     backgroundColor: AppColors.surfaceCard + 'CC',
     borderTopWidth: 1,
     borderTopColor: AppColors.textMuted + '1A',
@@ -609,9 +608,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.4,
     shadowRadius: 20,
   },
-  controlIcon: {
-    fontSize: 28,
-  },
+  controlIcon: {},
   controlButtonText: {
     fontSize: 16,
     fontWeight: '700',

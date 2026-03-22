@@ -1,4 +1,5 @@
 import React from 'react';
+import { MessageCircle, Mic, Volume2, Sparkles, Wrench, Package, Lock } from 'lucide-react-native';
 import {
   View,
   Text,
@@ -30,20 +31,24 @@ export const ModelLoaderWidget: React.FC<ModelLoaderWidgetProps> = ({
   isDownloaded,
   progress,
   onLoad,
+  icon,
 }) => {
-  const getIconEmoji = () => {
-    if (title.includes('LLM')) return '🤖';
-    if (title.includes('STT')) return '🎤';
-    if (title.includes('TTS')) return '🔊';
-    if (title.includes('Voice')) return '✨';
-    return '📦';
+  const renderIcon = () => {
+    switch (icon) {
+      case 'chat': return <MessageCircle size={48} color={accentColor} strokeWidth={1.5} />;
+      case 'mic': return <Mic size={48} color={accentColor} strokeWidth={1.5} />;
+      case 'volume': return <Volume2 size={48} color={accentColor} strokeWidth={1.5} />;
+      case 'pipeline': return <Sparkles size={48} color={accentColor} strokeWidth={1.5} />;
+      case 'tools': return <Wrench size={48} color={accentColor} strokeWidth={1.5} />;
+      default: return <Package size={48} color={accentColor} strokeWidth={1.5} />;
+    }
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.content}>
         <View style={[styles.iconContainer, { backgroundColor: accentColor + '20' }]}>
-          <Text style={styles.iconEmoji}>{getIconEmoji()}</Text>
+          {renderIcon()}
         </View>
 
         <Text style={styles.title}>{title}</Text>
@@ -89,8 +94,9 @@ export const ModelLoaderWidget: React.FC<ModelLoaderWidgetProps> = ({
         )}
 
         <View style={styles.infoBox}>
+          <Lock size={14} color={AppColors.textSecondary} style={{ marginRight: 6 }} />
           <Text style={styles.infoText}>
-            🔒 All processing happens on your device. Your data never leaves your phone.
+            All processing happens on your device. Your data never leaves your phone.
           </Text>
         </View>
       </View>
@@ -118,9 +124,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 24,
   },
-  iconEmoji: {
-    fontSize: 56,
-  },
+  iconEmoji: {},
   title: {
     fontSize: 24,
     fontWeight: '700',
@@ -181,8 +185,9 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: AppColors.surfaceCard,
     borderRadius: 12,
-    borderWidth: 1,
-    borderColor: AppColors.textMuted + '20',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   infoText: {
     fontSize: 12,

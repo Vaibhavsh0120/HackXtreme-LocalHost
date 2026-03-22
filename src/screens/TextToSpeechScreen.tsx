@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Turtle, Rabbit, Volume2, Square, Play, Loader2, Edit3, Plus } from 'lucide-react-native';
 import {
   View,
   Text,
@@ -153,9 +154,12 @@ export const TextToSpeechScreen: React.FC = () => {
             numberOfLines={5}
           />
           <View style={styles.inputFooter}>
-            <Text style={styles.characterCount}>
-              📝 {text.length} characters
-            </Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Edit3 size={14} color={AppColors.textMuted} style={{ marginRight: 6 }} />
+              <Text style={styles.characterCount}>
+                {text.length} characters
+              </Text>
+            </View>
             {text.length > 0 && (
               <TouchableOpacity onPress={() => setText('')}>
                 <Text style={styles.clearText}>Clear</Text>
@@ -168,9 +172,9 @@ export const TextToSpeechScreen: React.FC = () => {
         <View style={styles.controlsCard}>
           <Text style={styles.controlLabel}>Speech Rate</Text>
           <View style={styles.sliderContainer}>
-            <Text style={styles.sliderIcon}>🐌</Text>
+            <Turtle size={24} color={AppColors.textSecondary} />
             <Text style={styles.sliderValue}>{speechRate.toFixed(1)}x</Text>
-            <Text style={styles.sliderIcon}>🚀</Text>
+            <Rabbit size={24} color={AppColors.textSecondary} />
           </View>
           <View style={styles.rateButtons}>
             {[0.5, 0.75, 1.0, 1.5, 2.0].map((rate) => (
@@ -208,12 +212,12 @@ export const TextToSpeechScreen: React.FC = () => {
             </>
           ) : isSynthesizing ? (
             <>
-              <Text style={styles.loadingIcon}>⏳</Text>
+              <Loader2 size={48} color={AppColors.textSecondary} />
               <Text style={styles.playbackStatus}>Synthesizing...</Text>
             </>
           ) : (
             <>
-              <Text style={styles.playbackIcon}>🔊</Text>
+              <Volume2 size={48} color={AppColors.textSecondary} style={{ marginBottom: 16 }} />
               <Text style={styles.playbackStatus}>Tap to synthesize</Text>
             </>
           )}
@@ -231,9 +235,13 @@ export const TextToSpeechScreen: React.FC = () => {
               end={{ x: 1, y: 0 }}
               style={styles.playButton}
             >
-              <Text style={styles.playButtonIcon}>
-                {isSynthesizing ? '⏳' : isPlaying ? '⏹' : '▶️'}
-              </Text>
+              {isSynthesizing ? (
+                <Loader2 size={32} color="#FFF" />
+              ) : isPlaying ? (
+                <Square size={32} color="#FFF" fill="#FFF" />
+              ) : (
+                <Play size={32} color="#FFF" fill="#FFF" style={{ marginLeft: 6 }} />
+              )}
             </LinearGradient>
           </TouchableOpacity>
         </View>
@@ -250,7 +258,7 @@ export const TextToSpeechScreen: React.FC = () => {
               <Text style={styles.sampleText} numberOfLines={2}>
                 {sample}
               </Text>
-              <Text style={styles.sampleIcon}>➕</Text>
+              <Plus size={20} color={AppColors.accentPink + '99'} style={{ marginLeft: 8 }} />
             </TouchableOpacity>
           ))}
         </View>
@@ -323,9 +331,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 16,
   },
-  sliderIcon: {
-    fontSize: 20,
-  },
+  sliderIcon: {},
   sliderValue: {
     fontSize: 18,
     fontWeight: '700',
@@ -389,14 +395,8 @@ const styles = StyleSheet.create({
     backgroundColor: AppColors.accentPink,
     borderRadius: 3,
   },
-  playbackIcon: {
-    fontSize: 48,
-    marginBottom: 16,
-  },
-  loadingIcon: {
-    fontSize: 48,
-    marginBottom: 16,
-  },
+  playbackIcon: {},
+  loadingIcon: {},
   playbackStatus: {
     fontSize: 14,
     color: AppColors.textSecondary,
@@ -417,9 +417,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.4,
     shadowRadius: 20,
   },
-  playButtonIcon: {
-    fontSize: 32,
-  },
+  playButtonIcon: {},
   samplesSection: {
     marginBottom: 24,
   },
@@ -445,9 +443,5 @@ const styles = StyleSheet.create({
     color: AppColors.textSecondary,
     lineHeight: 18,
   },
-  sampleIcon: {
-    fontSize: 20,
-    color: AppColors.accentPink + '99',
-    marginLeft: 8,
-  },
+  sampleIcon: {},
 });

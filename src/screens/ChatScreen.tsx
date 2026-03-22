@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { Send, Square, ArrowDown, MessageCircle } from 'lucide-react-native';
 import {
   View,
   Text,
@@ -170,7 +171,7 @@ export const ChatScreen: React.FC = () => {
       {messages.length === 0 ? (
         <View style={styles.emptyState}>
           <View style={styles.emptyIconContainer}>
-            <Text style={styles.emptyIcon}>💬</Text>
+            <MessageCircle size={48} color={AppColors.accentCyan} strokeWidth={1.5} />
           </View>
           <Text style={styles.emptyTitle}>Start a Conversation</Text>
           <Text style={styles.emptySubtitle}>
@@ -213,7 +214,7 @@ export const ChatScreen: React.FC = () => {
             colors={[AppColors.btnActiveStart, AppColors.btnActiveEnd]}
             style={styles.fabGradient}
           >
-            <Text style={styles.fabIcon}>⬇</Text>
+            <ArrowDown size={24} color="#FFFFFF" strokeWidth={2.5} />
           </LinearGradient>
         </TouchableOpacity>
       )}
@@ -234,7 +235,7 @@ export const ChatScreen: React.FC = () => {
           {isGenerating ? (
             <TouchableOpacity onPress={handleStop} style={styles.stopButton}>
               <View style={styles.stopIcon}>
-                <Text style={styles.stopIconText}>⏹</Text>
+                <Square size={20} color={AppColors.error} strokeWidth={3} fill={AppColors.error} />
               </View>
             </TouchableOpacity>
           ) : (
@@ -245,7 +246,7 @@ export const ChatScreen: React.FC = () => {
                 end={{ x: 1, y: 0 }}
                 style={styles.sendButton}
               >
-                <Text style={styles.sendIcon}>📤</Text>
+                <Send size={20} color="#FFFFFF" strokeWidth={2.5} />
               </LinearGradient>
             </TouchableOpacity>
           )}
@@ -278,9 +279,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 24,
   },
-  emptyIcon: {
-    fontSize: 48,
-  },
+  emptyIcon: {},
   emptyTitle: {
     fontSize: 24,
     fontWeight: '700',
@@ -345,9 +344,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 8,
   },
-  sendIcon: {
-    fontSize: 20,
-  },
+  sendIcon: {},
   stopButton: {
     width: 48,
     height: 48,
@@ -362,10 +359,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  stopIconText: {
-    fontSize: 20,
-    color: AppColors.error,
-  },
+  stopIconText: {},
   fab: {
     position: 'absolute',
     bottom: 180,
@@ -385,7 +379,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  fabIcon: {
-    fontSize: 20,
-  },
+  fabIcon: {},
 });

@@ -1,5 +1,6 @@
 import 'react-native-gesture-handler'; // Must be at the top!
 import React, { useEffect } from 'react';
+import { MessageSquare, Wrench, Mic, Volume2, Zap, Settings as SettingsIcon } from 'lucide-react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -62,7 +63,7 @@ const MainTabs = () => {
         options={{ 
           tabBarIcon: ({ focused }) => (
              <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{fontSize: 22, color: focused ? AppColors.accentCyan : AppColors.textMuted}}>💬</Text>
+                <MessageSquare size={24} color={focused ? AppColors.accentCyan : AppColors.textMuted} strokeWidth={focused ? 2.5 : 2} />
                 {focused && <View style={{width: 4, height: 4, borderRadius: 2, backgroundColor: AppColors.accentCyan, marginTop: 4}} />}
              </View>
           ) 
@@ -74,7 +75,7 @@ const MainTabs = () => {
         options={{ 
           tabBarIcon: ({ focused }) => (
              <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{fontSize: 22, color: focused ? AppColors.accentCyan : AppColors.textMuted}}>🛠</Text>
+                <Wrench size={24} color={focused ? AppColors.accentCyan : AppColors.textMuted} strokeWidth={focused ? 2.5 : 2} />
                 {focused && <View style={{width: 4, height: 4, borderRadius: 2, backgroundColor: AppColors.accentCyan, marginTop: 4}} />}
              </View>
           ) 
@@ -86,7 +87,7 @@ const MainTabs = () => {
         options={{ 
           tabBarIcon: ({ focused }) => (
              <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{fontSize: 22, color: focused ? AppColors.accentCyan : AppColors.textMuted}}>🎤</Text>
+                <Mic size={24} color={focused ? AppColors.accentCyan : AppColors.textMuted} strokeWidth={focused ? 2.5 : 2} />
                 {focused && <View style={{width: 4, height: 4, borderRadius: 2, backgroundColor: AppColors.accentCyan, marginTop: 4}} />}
              </View>
           ) 
@@ -98,7 +99,7 @@ const MainTabs = () => {
         options={{ 
           tabBarIcon: ({ focused }) => (
              <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{fontSize: 22, color: focused ? AppColors.accentCyan : AppColors.textMuted}}>🔊</Text>
+                <Volume2 size={24} color={focused ? AppColors.accentCyan : AppColors.textMuted} strokeWidth={focused ? 2.5 : 2} />
                 {focused && <View style={{width: 4, height: 4, borderRadius: 2, backgroundColor: AppColors.accentCyan, marginTop: 4}} />}
              </View>
           ) 
@@ -110,7 +111,7 @@ const MainTabs = () => {
         options={{ 
           tabBarIcon: ({ focused }) => (
              <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{fontSize: 22, color: focused ? AppColors.accentCyan : AppColors.textMuted}}>⚡</Text>
+                <Zap size={24} color={focused ? AppColors.accentCyan : AppColors.textMuted} strokeWidth={focused ? 2.5 : 2} />
                 {focused && <View style={{width: 4, height: 4, borderRadius: 2, backgroundColor: AppColors.accentCyan, marginTop: 4}} />}
              </View>
           ) 
@@ -122,7 +123,7 @@ const MainTabs = () => {
         options={{ 
           tabBarIcon: ({ focused }) => (
              <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{fontSize: 22, color: focused ? AppColors.accentCyan : AppColors.textMuted}}>⚙</Text>
+                <SettingsIcon size={24} color={focused ? AppColors.accentCyan : AppColors.textMuted} strokeWidth={focused ? 2.5 : 2} />
                 {focused && <View style={{width: 4, height: 4, borderRadius: 2, backgroundColor: AppColors.accentCyan, marginTop: 4}} />}
              </View>
           ) 
