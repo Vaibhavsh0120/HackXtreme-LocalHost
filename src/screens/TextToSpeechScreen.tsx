@@ -14,7 +14,7 @@ import RNFS from 'react-native-fs';
 import { RunAnywhere } from '@runanywhere/core';
 import { AppColors } from '../theme';
 import { useModelService } from '../services/ModelService';
-import { ModelLoaderWidget } from '../components';
+import { ModelLoaderWidget, PrivacyBadge } from '../components';
 
 // Native Audio Module for better audio session management
 const { NativeAudioModule } = NativeModules;
@@ -142,6 +142,8 @@ export const TextToSpeechScreen: React.FC = () => {
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
       >
+        <PrivacyBadge label="Voice" />
+
         {/* Input Section */}
         <View style={styles.inputCard}>
           <TextInput

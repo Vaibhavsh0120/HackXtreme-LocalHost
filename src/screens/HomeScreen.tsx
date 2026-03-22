@@ -49,16 +49,60 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
             </View>
           </View>
 
-          {/* Privacy Banner */}
-          <View style={styles.privacyBanner}>
-            <Text style={styles.privacyIcon}>🔒</Text>
-            <View style={styles.privacyText}>
-              <Text style={styles.privacyTitle}>Privacy-First On-Device AI</Text>
-              <Text style={styles.privacySubtitle}>
-                All AI processing happens locally on your device. No data ever leaves your phone.
-              </Text>
+          {/* Privacy Hero Section */}
+          <LinearGradient
+            colors={['#0D1117', '#111827', '#0D1117']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.privacyHero}
+          >
+            {/* Shield Icon */}
+            <View style={styles.shieldContainer}>
+              <LinearGradient
+                colors={['#10B981', '#059669']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.shieldGradient}
+              >
+                <Text style={styles.shieldIcon}>🛡️</Text>
+              </LinearGradient>
             </View>
-          </View>
+
+            {/* Main Privacy Heading */}
+            <Text style={styles.privacyHeading}>Designed to Keep You Safe</Text>
+            <Text style={styles.privacyTagline}>
+              Your data never leaves your device. Ever.
+            </Text>
+
+            {/* Quote */}
+            <View style={styles.quoteContainer}>
+              <View style={styles.quoteLine} />
+              <Text style={styles.quoteText}>
+                "Privacy is not a feature,{'\n'}it is an obligation."
+              </Text>
+              <View style={styles.quoteLine} />
+            </View>
+
+            {/* Privacy Feature Bullets */}
+            <View style={styles.privacyFeatures}>
+              <View style={styles.privacyFeatureRow}>
+                <Text style={styles.privacyCheckmark}>✓</Text>
+                <Text style={styles.privacyFeatureText}>100% offline AI processing</Text>
+              </View>
+              <View style={styles.privacyFeatureRow}>
+                <Text style={styles.privacyCheckmark}>✓</Text>
+                <Text style={styles.privacyFeatureText}>No cloud, no servers, no tracking</Text>
+              </View>
+              <View style={styles.privacyFeatureRow}>
+                <Text style={styles.privacyCheckmark}>✓</Text>
+                <Text style={styles.privacyFeatureText}>Your conversations stay on your phone</Text>
+              </View>
+              <View style={styles.privacyFeatureRow}>
+                <Text style={styles.privacyCheckmark}>✓</Text>
+                <Text style={styles.privacyFeatureText}>No API keys or accounts needed</Text>
+              </View>
+            </View>
+          </LinearGradient>
 
           {/* Feature Cards Grid */}
           <View style={styles.gridContainer}>
@@ -187,32 +231,91 @@ const styles = StyleSheet.create({
     color: AppColors.accentCyan,
     marginTop: 2,
   },
-  privacyBanner: {
-    flexDirection: 'row',
-    padding: 20,
-    backgroundColor: AppColors.surfaceCard + 'CC',
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: AppColors.accentCyan + '33',
+  privacyHero: {
+    padding: 28,
+    borderRadius: 20,
+    borderWidth: 1.5,
+    borderColor: '#10B98140',
     marginBottom: 32,
+    alignItems: 'center',
+    shadowColor: '#10B981',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.15,
+    shadowRadius: 20,
+    elevation: 8,
   },
-  privacyIcon: {
-    fontSize: 28,
-    marginRight: 16,
+  shieldContainer: {
+    marginBottom: 16,
   },
-  privacyText: {
+  shieldGradient: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#10B981',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 12,
+    elevation: 10,
+  },
+  shieldIcon: {
+    fontSize: 30,
+  },
+  privacyHeading: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    textAlign: 'center',
+    letterSpacing: -0.3,
+    marginBottom: 6,
+  },
+  privacyTagline: {
+    fontSize: 13,
+    color: '#10B981',
+    textAlign: 'center',
+    fontWeight: '500',
+    marginBottom: 20,
+  },
+  quoteContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 22,
+    paddingHorizontal: 8,
+  },
+  quoteLine: {
     flex: 1,
+    height: 1,
+    backgroundColor: '#10B98130',
   },
-  privacyTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: AppColors.textPrimary,
-    marginBottom: 4,
+  quoteText: {
+    fontSize: 14,
+    fontStyle: 'italic',
+    color: '#D1D5DB',
+    textAlign: 'center',
+    lineHeight: 22,
+    paddingHorizontal: 14,
+    fontWeight: '500',
   },
-  privacySubtitle: {
-    fontSize: 12,
-    color: AppColors.textSecondary,
-    lineHeight: 18,
+  privacyFeatures: {
+    width: '100%',
+  },
+  privacyFeatureRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 6,
+  },
+  privacyCheckmark: {
+    fontSize: 14,
+    color: '#10B981',
+    fontWeight: '700',
+    marginRight: 10,
+    width: 20,
+  },
+  privacyFeatureText: {
+    fontSize: 13,
+    color: '#9CA3AF',
+    fontWeight: '400',
   },
   gridContainer: {
     marginBottom: 24,

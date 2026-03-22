@@ -21,7 +21,7 @@ import {
 } from '@runanywhere/core';
 import { AppColors } from '../theme';
 import { useModelService } from '../services/ModelService';
-import { ModelLoaderWidget } from '../components';
+import { ModelLoaderWidget, PrivacyBadge } from '../components';
 
 // ─── Tool Definitions ────────────────────────────────────────────
 
@@ -306,6 +306,7 @@ export const ToolCallingScreen: React.FC = () => {
               Register tools, then ask the model to use them.{'\n'}
               Try: "What's the weather in Tokyo?" or "Calculate 42 * 17"
             </Text>
+            <PrivacyBadge label="Tools" />
           </View>
         ) : (
           logs.map(log => (

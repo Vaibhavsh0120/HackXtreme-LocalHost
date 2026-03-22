@@ -17,7 +17,7 @@ import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import { RunAnywhere } from '@runanywhere/core';
 import { AppColors } from '../theme';
 import { useModelService } from '../services/ModelService';
-import { ChatMessageBubble, ChatMessage, ModelLoaderWidget } from '../components';
+import { ChatMessageBubble, ChatMessage, ModelLoaderWidget, PrivacyBadge } from '../components';
 
 export const ChatScreen: React.FC = () => {
   const modelService = useModelService();
@@ -177,6 +177,7 @@ export const ChatScreen: React.FC = () => {
           <Text style={styles.emptySubtitle}>
             Ask anything! The AI runs entirely on your device.
           </Text>
+          <PrivacyBadge label="Chat" />
           <View style={styles.suggestionsContainer}>
             {renderSuggestionChip('Tell me a joke')}
             {renderSuggestionChip('What is AI?')}

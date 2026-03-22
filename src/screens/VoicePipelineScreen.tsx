@@ -15,7 +15,7 @@ import RNFS from 'react-native-fs';
 import { RunAnywhere, VoiceSessionEvent, VoiceSessionHandle } from '@runanywhere/core';
 import { AppColors } from '../theme';
 import { useModelService } from '../services/ModelService';
-import { ModelLoaderWidget, AudioVisualizer } from '../components';
+import { ModelLoaderWidget, AudioVisualizer, PrivacyBadge } from '../components';
 import { requestMicrophonePermission } from '../utils/permissions';
 
 // Conditionally import Sound - disabled on iOS via react-native.config.js
@@ -344,6 +344,8 @@ export const VoicePipelineScreen: React.FC = () => {
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
       >
+        <PrivacyBadge label="Pipeline" />
+
         {/* Status Area */}
         <View style={[styles.statusArea, isActive && styles.statusActive]}>
           {isActive ? (

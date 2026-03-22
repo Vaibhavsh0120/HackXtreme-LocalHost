@@ -15,7 +15,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { RunAnywhere } from '@runanywhere/core';
 import { AppColors } from '../theme';
 import { useModelService } from '../services/ModelService';
-import { ModelLoaderWidget, AudioVisualizer } from '../components';
+import { ModelLoaderWidget, AudioVisualizer, PrivacyBadge } from '../components';
 import { requestMicrophonePermission } from '../utils/permissions';
 
 // Native Audio Module - records in WAV format (16kHz mono) optimal for Whisper STT
@@ -185,6 +185,8 @@ export const SpeechToTextScreen: React.FC = () => {
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
       >
+        <PrivacyBadge label="Speech" />
+
         {/* Recording Area */}
         <View style={[styles.recordingArea, isRecording && styles.recordingActive]}>
           {isRecording ? (
