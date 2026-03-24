@@ -18,7 +18,7 @@ import {
   ToolDefinition,
   ToolCallingResult,
 } from '@runanywhere/core';
-import { AppColors } from '../theme';
+import { useAppTheme, type AppColorsType } from '../theme';
 import { useModelService } from '../services/ModelService';
 import { ModelLoaderWidget, PrivacyBadge } from '../components';
 
@@ -217,6 +217,8 @@ const evaluateMathExpression = (expression: string): number => {
 export const ToolCallingScreen: React.FC = () => {
   const modelService = useModelService();
   const insets = useSafeAreaInsets();
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   const [inputText, setInputText] = useState('');
   const [isRunning, setIsRunning] = useState(false);
   const [logs, setLogs] = useState<LogEntry[]>([]);
@@ -334,7 +336,7 @@ export const ToolCallingScreen: React.FC = () => {
         title="LLM Model Required"
         subtitle="Download and load a language model to test tool calling"
         icon="tools"
-        accentColor={AppColors.accentOrange}
+        accentColor={colors.accentOrange}
         isDownloading={modelService.isLLMDownloading}
         isLoading={modelService.isLLMLoading}
         isDownloaded={modelService.isLLMDownloaded}
@@ -390,7 +392,7 @@ export const ToolCallingScreen: React.FC = () => {
       >
         {logs.length === 0 ? (
           <View style={styles.emptyState}>
-            <Wrench size={56} color={AppColors.accentOrange} strokeWidth={1.5} style={styles.emptyStateIcon} />
+            <Wrench size={56} color={colors.accentOrange} strokeWidth={1.5} style={styles.emptyStateIcon} />
             <Text style={styles.emptyTitle}>Tool Calling Test</Text>
             <Text style={styles.emptySubtitle}>
               Register tools, then ask the model to use them.{'\n'}
@@ -404,7 +406,7 @@ export const ToolCallingScreen: React.FC = () => {
               <View style={styles.logHeader}>
                 {(() => {
                   const Icon = LOG_ICONS[log.type];
-                  return <Icon size={16} color={AppColors.textPrimary} />;
+                  return <Icon size={16} color={colors.textPrimary} />;
                 })()}
                 <Text style={styles.logTitle}>{log.title}</Text>
                 <Text style={styles.logTime}>
@@ -419,7 +421,7 @@ export const ToolCallingScreen: React.FC = () => {
         )}
         {isRunning && (
           <View style={styles.loadingRow}>
-            <ActivityIndicator size="small" color={AppColors.accentOrange} />
+            <ActivityIndicator size="small" color={colors.accentOrange} />
             <Text style={styles.loadingText}>Generating...</Text>
           </View>
         )}
@@ -444,7 +446,7 @@ export const ToolCallingScreen: React.FC = () => {
           <TextInput
             style={styles.input}
             placeholder="Ask something that needs a tool..."
-            placeholderTextColor={AppColors.textMuted}
+            placeholderTextColor={colors.textMuted}
             value={inputText}
             onChangeText={setInputText}
             onSubmitEditing={handleGenerate}
@@ -453,7 +455,7 @@ export const ToolCallingScreen: React.FC = () => {
           />
           <TouchableOpacity onPress={handleGenerate} disabled={!inputText.trim() || isRunning}>
             <LinearGradient
-              colors={[AppColors.btnActiveStart, AppColors.btnActiveEnd]}
+              colors={[colors.btnActiveStart, colors.btnActiveEnd]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={[styles.sendButton, (!inputText.trim() || isRunning) && styles.sendButtonDisabled]}
@@ -480,10 +482,11 @@ const LOG_ICONS: Record<LogType, React.ComponentType<any>> = {
 
 // ─── Styles ────────────────────────────────────────────────────
 
-const styles = StyleSheet.create({
+const createStyles = (colors: AppColorsType) =>
+  StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: AppColors.primaryDark,
+    backgroundColor: colors.primaryDark,
   },
 
   // Action bar
@@ -496,33 +499,33 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 10,
     borderRadius: 12,
-    backgroundColor: AppColors.surfaceCard,
+    backgroundColor: colors.surfaceCard,
     borderWidth: 1,
-    borderColor: AppColors.accentOrange + '40',
+    borderColor: colors.accentOrange + '40',
     alignItems: 'center',
   },
   actionBtnActive: {
-    backgroundColor: AppColors.accentOrange + '20',
-    borderColor: AppColors.accentOrange,
+    backgroundColor: colors.accentOrange + '20',
+    borderColor: colors.accentOrange,
   },
   actionBtnText: {
     fontSize: 13,
     fontWeight: '600',
-    color: AppColors.accentOrange,
+    color: colors.accentOrange,
   },
   actionBtnClear: {
     paddingVertical: 10,
     paddingHorizontal: 16,
     borderRadius: 12,
-    backgroundColor: AppColors.surfaceCard,
+    backgroundColor: colors.surfaceCard,
     borderWidth: 1,
-    borderColor: AppColors.textMuted + '40',
+    borderColor: colors.textMuted + '40',
     alignItems: 'center',
   },
   actionBtnClearText: {
     fontSize: 13,
     fontWeight: '600',
-    color: AppColors.textMuted,
+    color: colors.textMuted,
   },
 
   // Tool chips
@@ -535,13 +538,13 @@ const styles = StyleSheet.create({
   toolChip: {
     paddingHorizontal: 10,
     paddingVertical: 4,
-    backgroundColor: AppColors.surfaceElevated,
+    backgroundColor: colors.surfaceElevated,
     borderRadius: 8,
   },
   toolChipText: {
     fontSize: 11,
     fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
-    color: AppColors.textSecondary,
+    color: colors.textSecondary,
   },
 
   // Log area
@@ -567,12 +570,12 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 22,
     fontWeight: '700',
-    color: AppColors.textPrimary,
+    color: colors.textPrimary,
     marginBottom: 8,
   },
   emptySubtitle: {
     fontSize: 13,
-    color: AppColors.textSecondary,
+    color: colors.textSecondary,
     textAlign: 'center',
     lineHeight: 20,
     paddingHorizontal: 32,
@@ -595,45 +598,45 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 13,
     fontWeight: '600',
-    color: AppColors.textPrimary,
+    color: colors.textPrimary,
   },
   logTime: {
     fontSize: 10,
-    color: AppColors.textMuted,
+    color: colors.textMuted,
     fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
   },
   logDetail: {
     marginTop: 6,
     fontSize: 12,
-    color: AppColors.textSecondary,
+    color: colors.textSecondary,
     fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
     lineHeight: 18,
   },
 
   // Log type-specific colors
   log_info: {
-    backgroundColor: AppColors.info + '10',
-    borderColor: AppColors.info + '30',
+    backgroundColor: colors.info + '10',
+    borderColor: colors.info + '30',
   },
   log_prompt: {
-    backgroundColor: AppColors.accentCyan + '10',
-    borderColor: AppColors.accentCyan + '30',
+    backgroundColor: colors.accentCyan + '10',
+    borderColor: colors.accentCyan + '30',
   },
   log_tool_call: {
-    backgroundColor: AppColors.accentOrange + '10',
-    borderColor: AppColors.accentOrange + '30',
+    backgroundColor: colors.accentOrange + '10',
+    borderColor: colors.accentOrange + '30',
   },
   log_tool_result: {
-    backgroundColor: AppColors.accentGreen + '10',
-    borderColor: AppColors.accentGreen + '30',
+    backgroundColor: colors.accentGreen + '10',
+    borderColor: colors.accentGreen + '30',
   },
   log_response: {
-    backgroundColor: AppColors.accentViolet + '10',
-    borderColor: AppColors.accentViolet + '30',
+    backgroundColor: colors.accentViolet + '10',
+    borderColor: colors.accentViolet + '30',
   },
   log_error: {
-    backgroundColor: AppColors.error + '10',
-    borderColor: AppColors.error + '30',
+    backgroundColor: colors.error + '10',
+    borderColor: colors.error + '30',
   },
 
   // Loading
@@ -646,7 +649,7 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     fontSize: 13,
-    color: AppColors.accentOrange,
+    color: colors.accentOrange,
   },
 
   // Suggestions
@@ -660,23 +663,23 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 8,
     paddingVertical: 6,
-    backgroundColor: AppColors.surfaceCard,
+    backgroundColor: colors.surfaceCard,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: AppColors.accentOrange + '30',
+    borderColor: colors.accentOrange + '30',
   },
   suggestionText: {
     fontSize: 10,
-    color: AppColors.textSecondary,
+    color: colors.textSecondary,
     textAlign: 'center',
   },
 
   inputContainer: {
     padding: 12,
     paddingBottom: 100,
-    backgroundColor: AppColors.surfaceCard + 'CC',
+    backgroundColor: colors.surfaceCard + 'CC',
     borderTopWidth: 1,
-    borderTopColor: AppColors.textMuted + '1A',
+    borderTopColor: colors.textMuted + '1A',
   },
   inputWrapper: {
     flexDirection: 'row',
@@ -685,12 +688,12 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    backgroundColor: AppColors.primaryMid,
+    backgroundColor: colors.primaryMid,
     borderRadius: 20,
     paddingHorizontal: 16,
     paddingVertical: 10,
     fontSize: 14,
-    color: AppColors.textPrimary,
+    color: colors.textPrimary,
     maxHeight: 80,
   },
   sendButton: {

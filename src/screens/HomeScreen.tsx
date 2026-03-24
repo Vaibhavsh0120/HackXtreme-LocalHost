@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { AppColors } from '../theme';
+import { useAppTheme, type AppColorsType } from '../theme';
 import { FeatureCard } from '../components';
 import { MainTabParamList } from '../navigation/types';
 
@@ -17,11 +17,14 @@ type HomeScreenProps = {
 };
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
+  const { colors, resolvedTheme } = useAppTheme();
+  const styles = createStyles(colors);
+
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar barStyle={resolvedTheme === 'light' ? 'dark-content' : 'light-content'} />
       <LinearGradient
-        colors={[AppColors.primaryDark, '#0F1629', AppColors.primaryMid]}
+        colors={[colors.primaryDark, colors.surfaceElevated, colors.primaryMid]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.gradient}
@@ -35,7 +38,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           <View style={styles.header}>
             <View style={styles.logoContainer}>
               <LinearGradient
-                colors={[AppColors.accentCyan, AppColors.accentViolet]}
+                colors={[colors.accentCyan, colors.accentViolet]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.logoGradient}
@@ -111,14 +114,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                 title="Chat"
                 subtitle="LLM Text Generation"
                 icon="chat"
-                gradientColors={[AppColors.accentCyan, '#0EA5E9']}
+                gradientColors={[colors.accentCyan, '#0EA5E9']}
                 onPress={() => navigation.navigate('ChatTab')}
               />
               <FeatureCard
                 title="Tools"
                 subtitle="Tool Calling"
                 icon="tools"
-                gradientColors={[AppColors.accentOrange, '#E67E22']}
+                gradientColors={[colors.accentOrange, '#E67E22']}
                 onPress={() => navigation.navigate('ToolsTab')}
               />
             </View>
@@ -127,14 +130,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                 title="Speech"
                 subtitle="Speech to Text"
                 icon="mic"
-                gradientColors={[AppColors.accentViolet, '#7C3AED']}
+                gradientColors={[colors.accentViolet, '#7C3AED']}
                 onPress={() => navigation.navigate('SpeechTab')}
               />
               <FeatureCard
                 title="Voice"
                 subtitle="Text to Speech"
                 icon="volume"
-                gradientColors={[AppColors.accentPink, '#DB2777']}
+                gradientColors={[colors.accentPink, '#DB2777']}
                 onPress={() => navigation.navigate('VoiceTab')}
               />
             </View>
@@ -143,7 +146,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                 title="Pipeline"
                 subtitle="Voice Agent"
                 icon="pipeline"
-                gradientColors={[AppColors.accentGreen, '#059669']}
+                gradientColors={[colors.accentGreen, '#059669']}
                 onPress={() => navigation.navigate('PipelineTab')}
               />
               <View style={styles.gridSpacer} />
@@ -177,10 +180,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors: AppColorsType) =>
+  StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: AppColors.primaryDark,
+    backgroundColor: colors.primaryDark,
   },
   gradient: {
     flex: 1,
@@ -208,7 +212,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 8,
-    shadowColor: AppColors.accentCyan,
+    shadowColor: colors.accentCyan,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.4,
     shadowRadius: 12,
@@ -222,13 +226,13 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: '700',
-    color: AppColors.textPrimary,
+    color: colors.textPrimary,
     letterSpacing: -0.5,
   },
   subtitle: {
     fontSize: 14,
     fontWeight: '500',
-    color: AppColors.accentCyan,
+    color: colors.accentCyan,
     marginTop: 2,
   },
   privacyHero: {
@@ -331,10 +335,10 @@ const styles = StyleSheet.create({
   },
   infoSection: {
     padding: 20,
-    backgroundColor: AppColors.surfaceCard + '80',
+    backgroundColor: colors.surfaceCard + '80',
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: AppColors.textMuted + '1A',
+    borderColor: colors.textMuted + '1A',
   },
   infoRow: {
     flexDirection: 'row',
@@ -350,11 +354,11 @@ const styles = StyleSheet.create({
   },
   infoLabel: {
     fontSize: 14,
-    color: AppColors.textSecondary,
+    color: colors.textSecondary,
   },
   infoValue: {
     fontSize: 12,
-    color: AppColors.accentCyan,
+    color: colors.accentCyan,
     fontWeight: '500',
   },
 });

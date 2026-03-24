@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
 import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
-import { AppColors } from '../theme';
+import { useAppTheme } from '../theme';
 
 interface AudioVisualizerProps {
   level: number; // 0.0 to 1.0
   barCount?: number;
 }
 
-const AudioBar: React.FC<{ level: number, index: number, barCount: number }> = ({ level, index, barCount }) => {
+const AudioBar: React.FC<{ level: number, index: number, barCount: number; color: string }> = ({ level, index, barCount, color }) => {
   const height = useSharedValue(0.2);
 
   useEffect(() => {
@@ -27,19 +27,20 @@ const AudioBar: React.FC<{ level: number, index: number, barCount: number }> = (
     height: `${height.value * 100}%`,
   }));
 
-  return <Animated.View style={[styles.bar, animatedStyle]} />;
+  return <Animated.View style={[styles.bar, { backgroundColor: color }, animatedStyle]} />;
 };
 
 export const AudioVisualizer: React.FC<AudioVisualizerProps> = ({
   level,
   barCount = 7,
 }) => {
+  const { colors } = useAppTheme();
   const bars = Array.from({ length: barCount }, (_, i) => i);
 
   return (
     <View style={styles.container}>
       {bars.map((index) => (
-        <AudioBar key={index} level={level} index={index} barCount={barCount} />
+        <AudioBar key={index} level={level} index={index} barCount={barCount} color={colors.accentViolet} />
       ))}
     </View>
   );
@@ -55,7 +56,6 @@ const styles = StyleSheet.create({
   },
   bar: {
     width: 6,
-    backgroundColor: AppColors.accentViolet,
     borderRadius: 3,
     minHeight: 12,
   },

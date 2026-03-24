@@ -8,12 +8,14 @@ import {
 } from 'react-native';
 import { Zap } from 'lucide-react-native';
 import { useNavigation, CommonActions } from '@react-navigation/native';
-import { AppColors } from '../theme';
+import { useAppTheme, type AppColorsType } from '../theme';
 import { useModelService } from '../services/ModelService';
 
 export const SplashScreen: React.FC = () => {
   const navigation = useNavigation();
   const modelService = useModelService();
+  const { colors, resolvedTheme } = useAppTheme();
+  const styles = createStyles(colors);
 
   // Animation values
   const logoOpacity = useRef(new Animated.Value(0)).current;
@@ -83,7 +85,10 @@ export const SplashScreen: React.FC = () => {
 
   return (
     <Animated.View style={[styles.container, { opacity: containerOpacity }]}>
-      <StatusBar barStyle="light-content" backgroundColor={AppColors.primaryDark} />
+      <StatusBar
+        barStyle={resolvedTheme === 'light' ? 'dark-content' : 'light-content'}
+        backgroundColor={colors.primaryDark}
+      />
 
       <View style={styles.content}>
         {/* Logo */}
@@ -126,79 +131,80 @@ export const SplashScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: AppColors.primaryDark,
-  },
-  content: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 48,
-  },
-  logoContainer: {
-    marginBottom: 32,
-  },
-  logoCircle: {
-    width: 96,
-    height: 96,
-    borderRadius: 48,
-    backgroundColor: AppColors.surfaceCard,
-    borderWidth: 1,
-    borderColor: AppColors.textMuted + '40',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  appName: {
-    fontSize: 36,
-    fontWeight: '700',
-    color: AppColors.textPrimary,
-    textAlign: 'center',
-    letterSpacing: -1,
-  },
-  tagline: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: AppColors.textSecondary,
-    textAlign: 'center',
-    marginTop: 6,
-    letterSpacing: 2,
-    textTransform: 'uppercase',
-  },
-  statusContainer: {
-    marginTop: 56,
-    alignItems: 'center',
-    width: '100%',
-    maxWidth: 220,
-  },
-  loadingBar: {
-    width: '100%',
-    height: 2,
-    backgroundColor: AppColors.surfaceElevated,
-    borderRadius: 1,
-    overflow: 'hidden',
-    marginBottom: 16,
-  },
-  loadingBarInner: {
-    width: '40%',
-    height: '100%',
-    backgroundColor: AppColors.textSecondary,
-    borderRadius: 1,
-  },
-  statusText: {
-    fontSize: 13,
-    color: AppColors.textMuted,
-    textAlign: 'center',
-    letterSpacing: 0.3,
-  },
-  footer: {
-    paddingBottom: 40,
-    alignItems: 'center',
-  },
-  footerText: {
-    fontSize: 11,
-    color: AppColors.textMuted,
-    letterSpacing: 0.5,
-  },
-});
+const createStyles = (colors: AppColorsType) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.primaryDark,
+    },
+    content: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingHorizontal: 48,
+    },
+    logoContainer: {
+      marginBottom: 32,
+    },
+    logoCircle: {
+      width: 96,
+      height: 96,
+      borderRadius: 48,
+      backgroundColor: colors.surfaceCard,
+      borderWidth: 1,
+      borderColor: colors.textMuted + '40',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    appName: {
+      fontSize: 36,
+      fontWeight: '700',
+      color: colors.textPrimary,
+      textAlign: 'center',
+      letterSpacing: -1,
+    },
+    tagline: {
+      fontSize: 14,
+      fontWeight: '500',
+      color: colors.textSecondary,
+      textAlign: 'center',
+      marginTop: 6,
+      letterSpacing: 2,
+      textTransform: 'uppercase',
+    },
+    statusContainer: {
+      marginTop: 56,
+      alignItems: 'center',
+      width: '100%',
+      maxWidth: 220,
+    },
+    loadingBar: {
+      width: '100%',
+      height: 2,
+      backgroundColor: colors.surfaceElevated,
+      borderRadius: 1,
+      overflow: 'hidden',
+      marginBottom: 16,
+    },
+    loadingBarInner: {
+      width: '40%',
+      height: '100%',
+      backgroundColor: colors.textSecondary,
+      borderRadius: 1,
+    },
+    statusText: {
+      fontSize: 13,
+      color: colors.textMuted,
+      textAlign: 'center',
+      letterSpacing: 0.3,
+    },
+    footer: {
+      paddingBottom: 40,
+      alignItems: 'center',
+    },
+    footerText: {
+      fontSize: 11,
+      color: colors.textMuted,
+      letterSpacing: 0.5,
+    },
+  });

@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Animated, { FadeInUp, Layout } from 'react-native-reanimated';
 import Markdown from 'react-native-markdown-display';
-import { AppColors } from '../theme';
+import { useAppTheme, type AppColorsType } from '../theme';
 
 export interface ChatMessage {
   text: string;
@@ -23,6 +23,9 @@ export const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
   message,
   isStreaming = false,
 }) => {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
+  const markdownStyles = createMarkdownStyles(colors);
   const { text, isUser, tokensPerSecond, totalTokens, isError, wasCancelled } = message;
 
   return (
@@ -80,109 +83,111 @@ export const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    marginVertical: 4,
-    paddingHorizontal: 16,
-  },
-  userContainer: {
-    alignItems: 'flex-end',
-  },
-  assistantContainer: {
-    alignItems: 'flex-start',
-  },
-  bubble: {
-    maxWidth: '85%',
-    padding: 12,
-    borderRadius: 16,
-    marginVertical: 2,
-  },
-  userBubble: {
-    backgroundColor: AppColors.accentCyan,
-    borderBottomRightRadius: 4,
-  },
-  assistantBubble: {
-    backgroundColor: AppColors.surfaceCard,
-    borderBottomLeftRadius: 4,
-    borderWidth: 1,
-    borderColor: AppColors.textMuted + '20',
-  },
-  errorBubble: {
-    backgroundColor: AppColors.error + '20',
-    borderColor: AppColors.error + '40',
-  },
-  text: {
-    fontSize: 15,
-    lineHeight: 21,
-  },
-  userText: {
-    color: AppColors.primaryDark,
-  },
-  assistantText: {
-    color: AppColors.textPrimary,
-  },
-  errorText: {
-    color: AppColors.error,
-  },
-  metricsContainer: {
-    flexDirection: 'row',
-    marginTop: 8,
-    gap: 12,
-  },
-  metrics: {
-    fontSize: 11,
-    color: AppColors.textMuted,
-  },
-  cancelledText: {
-    fontSize: 11,
-    color: AppColors.warning,
-    marginTop: 4,
-  },
-  streamingIndicator: {
-    fontSize: 16,
-    color: AppColors.accentCyan,
-    marginTop: 2,
-  },
-});
+const createStyles = (colors: AppColorsType) =>
+  StyleSheet.create({
+    container: {
+      marginVertical: 4,
+      paddingHorizontal: 16,
+    },
+    userContainer: {
+      alignItems: 'flex-end',
+    },
+    assistantContainer: {
+      alignItems: 'flex-start',
+    },
+    bubble: {
+      maxWidth: '85%',
+      padding: 12,
+      borderRadius: 16,
+      marginVertical: 2,
+    },
+    userBubble: {
+      backgroundColor: colors.accentCyan,
+      borderBottomRightRadius: 4,
+    },
+    assistantBubble: {
+      backgroundColor: colors.surfaceCard,
+      borderBottomLeftRadius: 4,
+      borderWidth: 1,
+      borderColor: colors.textMuted + '20',
+    },
+    errorBubble: {
+      backgroundColor: colors.error + '20',
+      borderColor: colors.error + '40',
+    },
+    text: {
+      fontSize: 15,
+      lineHeight: 21,
+    },
+    userText: {
+      color: colors.primaryDark,
+    },
+    assistantText: {
+      color: colors.textPrimary,
+    },
+    errorText: {
+      color: colors.error,
+    },
+    metricsContainer: {
+      flexDirection: 'row',
+      marginTop: 8,
+      gap: 12,
+    },
+    metrics: {
+      fontSize: 11,
+      color: colors.textMuted,
+    },
+    cancelledText: {
+      fontSize: 11,
+      color: colors.warning,
+      marginTop: 4,
+    },
+    streamingIndicator: {
+      fontSize: 16,
+      color: colors.accentCyan,
+      marginTop: 2,
+    },
+  });
 
-const markdownStyles = StyleSheet.create({
-  body: {
-    color: AppColors.textPrimary,
-    fontSize: 15,
-    lineHeight: 21,
-  },
-  code_inline: {
-    backgroundColor: AppColors.primaryMid,
-    color: AppColors.textPrimary,
-    fontFamily: 'monospace',
-    paddingHorizontal: 4,
-    borderRadius: 4,
-  },
-  code_block: {
-    backgroundColor: AppColors.primaryDark,
-    color: AppColors.textSecondary,
-    fontFamily: 'monospace',
-    padding: 12,
-    borderRadius: 8,
-    marginVertical: 8,
-  },
-  fence: {
-    backgroundColor: AppColors.primaryDark,
-    color: AppColors.textSecondary,
-    fontFamily: 'monospace',
-    padding: 12,
-    borderRadius: 8,
-    marginVertical: 8,
-  },
-  strong: {
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-  },
-  em: {
-    fontStyle: 'italic',
-  },
-  paragraph: {
-    marginTop: 0,
-    marginBottom: 8,
-  },
-});
+const createMarkdownStyles = (colors: AppColorsType) =>
+  StyleSheet.create({
+    body: {
+      color: colors.textPrimary,
+      fontSize: 15,
+      lineHeight: 21,
+    },
+    code_inline: {
+      backgroundColor: colors.primaryMid,
+      color: colors.textPrimary,
+      fontFamily: 'monospace',
+      paddingHorizontal: 4,
+      borderRadius: 4,
+    },
+    code_block: {
+      backgroundColor: colors.primaryDark,
+      color: colors.textSecondary,
+      fontFamily: 'monospace',
+      padding: 12,
+      borderRadius: 8,
+      marginVertical: 8,
+    },
+    fence: {
+      backgroundColor: colors.primaryDark,
+      color: colors.textSecondary,
+      fontFamily: 'monospace',
+      padding: 12,
+      borderRadius: 8,
+      marginVertical: 8,
+    },
+    strong: {
+      fontWeight: 'bold',
+      color: colors.textPrimary,
+    },
+    em: {
+      fontStyle: 'italic',
+    },
+    paragraph: {
+      marginTop: 0,
+      marginBottom: 8,
+    },
+  });

@@ -13,7 +13,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import { RunAnywhere } from '@runanywhere/core';
-import { AppColors } from '../theme';
+import { useAppTheme, type AppColorsType } from '../theme';
 import { useModelService } from '../services/ModelService';
 import { ModelLoaderWidget, AudioVisualizer, PrivacyBadge } from '../components';
 import { requestMicrophonePermission } from '../utils/permissions';
@@ -24,6 +24,8 @@ const { NativeAudioModule } = NativeModules;
 export const SpeechToTextScreen: React.FC = () => {
   const modelService = useModelService();
   const insets = useSafeAreaInsets();
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   const [isRecording, setIsRecording] = useState(false);
   const [isTranscribing, setIsTranscribing] = useState(false);
   const [transcription, setTranscription] = useState('');
@@ -170,7 +172,7 @@ export const SpeechToTextScreen: React.FC = () => {
         title="STT Model Required"
         subtitle="Download and load the speech recognition model"
         icon="mic"
-        accentColor={AppColors.accentViolet}
+        accentColor={colors.accentViolet}
         isDownloading={modelService.isSTTDownloading}
         isLoading={modelService.isSTTLoading}
         isDownloaded={modelService.isSTTDownloaded}
@@ -193,7 +195,7 @@ export const SpeechToTextScreen: React.FC = () => {
           {isRecording ? (
             <>
               <AudioVisualizer level={audioLevel} />
-              <Text style={[styles.statusTitle, { color: AppColors.accentViolet }]}>
+              <Text style={[styles.statusTitle, { color: colors.accentViolet }]}>
                 Listening...
               </Text>
               <Text style={styles.statusSubtitle}>
@@ -203,14 +205,14 @@ export const SpeechToTextScreen: React.FC = () => {
           ) : isTranscribing ? (
             <>
               <View style={styles.loadingContainer}>
-                <Loader2 size={48} color={AppColors.accentViolet} />
+                <Loader2 size={48} color={colors.accentViolet} />
               </View>
               <Text style={styles.statusTitle}>Transcribing...</Text>
             </>
           ) : (
             <>
               <View style={styles.micContainer}>
-                <Mic size={48} color={AppColors.accentViolet} />
+                <Mic size={48} color={colors.accentViolet} />
               </View>
               <Text style={styles.statusTitle}>Tap to Record</Text>
               <Text style={styles.statusSubtitle}>On-device speech recognition (WAV 16kHz)</Text>
@@ -236,7 +238,7 @@ export const SpeechToTextScreen: React.FC = () => {
             <View style={styles.historyHeader}>
               <Text style={styles.historyTitle}>History</Text>
               <TouchableOpacity onPress={handleClearHistory} style={styles.clearHistoryButton}>
-                <Trash2 size={16} color={AppColors.accentViolet} style={styles.clearHistoryIcon} />
+                <Trash2 size={16} color={colors.accentViolet} style={styles.clearHistoryIcon} />
                 <Text style={styles.clearButton}>Clear</Text>
               </TouchableOpacity>
             </View>
@@ -263,7 +265,7 @@ export const SpeechToTextScreen: React.FC = () => {
           activeOpacity={0.8}
         >
           <LinearGradient
-            colors={isRecording ? [AppColors.btnActiveStart, AppColors.btnActiveEnd] : [AppColors.btnInactiveStart, AppColors.btnInactiveEnd]}
+            colors={isRecording ? [colors.btnActiveStart, colors.btnActiveEnd] : [colors.btnInactiveStart, colors.btnInactiveEnd]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={styles.recordButton}
@@ -279,152 +281,153 @@ export const SpeechToTextScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: AppColors.primaryDark,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    padding: 24,
-    paddingBottom: 100,
-  },
-  recordingArea: {
-    padding: 32,
-    backgroundColor: AppColors.surfaceCard,
-    borderRadius: 24,
-    borderWidth: 1,
-    borderColor: AppColors.textMuted + '1A',
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  recordingActive: {
-    borderColor: AppColors.accentViolet + '80',
-    borderWidth: 2,
-    shadowColor: AppColors.accentViolet,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.3,
-    shadowRadius: 20,
-    elevation: 8,
-  },
-  micContainer: {
-    width: 100,
-    height: 100,
-    backgroundColor: AppColors.accentViolet + '20',
-    borderRadius: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  micIcon: {},
-  loadingContainer: {
-    width: 80,
-    height: 80,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  loadingIcon: {},
-  statusTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: AppColors.textPrimary,
-    marginBottom: 8,
-  },
-  statusSubtitle: {
-    fontSize: 14,
-    color: AppColors.textSecondary,
-  },
-  transcriptionCard: {
-    padding: 20,
-    backgroundColor: AppColors.surfaceCard,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: AppColors.accentViolet + '40',
-    marginBottom: 24,
-  },
-  badge: {
-    alignSelf: 'flex-start',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    backgroundColor: AppColors.accentViolet + '33',
-    borderRadius: 8,
-    marginBottom: 12,
-  },
-  badgeText: {
-    fontSize: 10,
-    fontWeight: '700',
-    color: AppColors.accentViolet,
-  },
-  transcriptionText: {
-    fontSize: 15,
-    color: AppColors.textPrimary,
-    lineHeight: 22,
-  },
-  historySection: {
-    marginBottom: 24,
-  },
-  historyHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  historyTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: AppColors.textMuted,
-  },
-  clearButton: {
-    fontSize: 14,
-    color: AppColors.accentViolet,
-  },
-  clearHistoryButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  clearHistoryIcon: {
-    marginRight: 6,
-  },
-  historyItem: {
-    padding: 16,
-    backgroundColor: AppColors.surfaceCard + '80',
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: AppColors.textMuted + '1A',
-    marginBottom: 12,
-  },
-  historyText: {
-    fontSize: 14,
-    color: AppColors.textSecondary,
-    lineHeight: 20,
-  },
-  buttonContainer: {
-    padding: 24,
-    paddingBottom: 110,
-    backgroundColor: AppColors.surfaceCard + 'CC',
-    borderTopWidth: 1,
-    borderTopColor: AppColors.textMuted + '1A',
-  },
-  recordButton: {
-    flexDirection: 'row',
-    height: 72,
-    borderRadius: 36,
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 12,
-    elevation: 8,
-    shadowColor: AppColors.accentViolet,
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.4,
-    shadowRadius: 20,
-  },
-  recordIcon: {},
-  recordButtonText: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#FFFFFF',
-  },
-});
+const createStyles = (colors: AppColorsType) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.primaryDark,
+    },
+    scrollView: {
+      flex: 1,
+    },
+    scrollContent: {
+      padding: 24,
+      paddingBottom: 100,
+    },
+    recordingArea: {
+      padding: 32,
+      backgroundColor: colors.surfaceCard,
+      borderRadius: 24,
+      borderWidth: 1,
+      borderColor: colors.textMuted + '1A',
+      alignItems: 'center',
+      marginBottom: 24,
+    },
+    recordingActive: {
+      borderColor: colors.accentViolet + '80',
+      borderWidth: 2,
+      shadowColor: colors.accentViolet,
+      shadowOffset: { width: 0, height: 0 },
+      shadowOpacity: 0.3,
+      shadowRadius: 20,
+      elevation: 8,
+    },
+    micContainer: {
+      width: 100,
+      height: 100,
+      backgroundColor: colors.accentViolet + '20',
+      borderRadius: 50,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginBottom: 24,
+    },
+    micIcon: {},
+    loadingContainer: {
+      width: 80,
+      height: 80,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginBottom: 24,
+    },
+    loadingIcon: {},
+    statusTitle: {
+      fontSize: 20,
+      fontWeight: '700',
+      color: colors.textPrimary,
+      marginBottom: 8,
+    },
+    statusSubtitle: {
+      fontSize: 14,
+      color: colors.textSecondary,
+    },
+    transcriptionCard: {
+      padding: 20,
+      backgroundColor: colors.surfaceCard,
+      borderRadius: 16,
+      borderWidth: 1,
+      borderColor: colors.accentViolet + '40',
+      marginBottom: 24,
+    },
+    badge: {
+      alignSelf: 'flex-start',
+      paddingHorizontal: 8,
+      paddingVertical: 4,
+      backgroundColor: colors.accentViolet + '33',
+      borderRadius: 8,
+      marginBottom: 12,
+    },
+    badgeText: {
+      fontSize: 10,
+      fontWeight: '700',
+      color: colors.accentViolet,
+    },
+    transcriptionText: {
+      fontSize: 15,
+      color: colors.textPrimary,
+      lineHeight: 22,
+    },
+    historySection: {
+      marginBottom: 24,
+    },
+    historyHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: 12,
+    },
+    historyTitle: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: colors.textMuted,
+    },
+    clearButton: {
+      fontSize: 14,
+      color: colors.accentViolet,
+    },
+    clearHistoryButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    clearHistoryIcon: {
+      marginRight: 6,
+    },
+    historyItem: {
+      padding: 16,
+      backgroundColor: colors.surfaceCard + '80',
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: colors.textMuted + '1A',
+      marginBottom: 12,
+    },
+    historyText: {
+      fontSize: 14,
+      color: colors.textSecondary,
+      lineHeight: 20,
+    },
+    buttonContainer: {
+      padding: 24,
+      paddingBottom: 110,
+      backgroundColor: colors.surfaceCard + 'CC',
+      borderTopWidth: 1,
+      borderTopColor: colors.textMuted + '1A',
+    },
+    recordButton: {
+      flexDirection: 'row',
+      height: 72,
+      borderRadius: 36,
+      justifyContent: 'center',
+      alignItems: 'center',
+      gap: 12,
+      elevation: 8,
+      shadowColor: colors.accentViolet,
+      shadowOffset: { width: 0, height: 8 },
+      shadowOpacity: 0.4,
+      shadowRadius: 20,
+    },
+    recordIcon: {},
+    recordButtonText: {
+      fontSize: 16,
+      fontWeight: '700',
+      color: '#FFFFFF',
+    },
+  });

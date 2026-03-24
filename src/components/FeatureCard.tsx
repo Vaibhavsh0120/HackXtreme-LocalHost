@@ -6,7 +6,7 @@ import {
   ViewStyle,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import { AppColors } from '../theme';
+import { useAppTheme } from '../theme';
 
 interface FeatureCardProps {
   title: string;
@@ -22,8 +22,14 @@ export const FeatureCard: React.FC<FeatureCardProps> = ({
   gradientColors,
   onPress,
 }) => {
+  const { colors } = useAppTheme();
+
   return (
-    <TouchableOpacity onPress={onPress} style={styles.container} activeOpacity={0.8}>
+    <TouchableOpacity
+      onPress={onPress}
+      style={[styles.container, { shadowColor: colors.accentCyan }]}
+      activeOpacity={0.8}
+    >
       <LinearGradient
         colors={gradientColors}
         start={{ x: 0, y: 0 }}
@@ -57,7 +63,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     overflow: 'hidden',
     elevation: 8,
-    shadowColor: AppColors.accentCyan,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 12,

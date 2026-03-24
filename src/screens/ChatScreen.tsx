@@ -16,13 +16,15 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import { RunAnywhere } from '@runanywhere/core';
-import { AppColors } from '../theme';
+import { useAppTheme, type AppColorsType } from '../theme';
 import { useModelService } from '../services/ModelService';
 import { ChatMessageBubble, ChatMessage, ModelLoaderWidget, PrivacyBadge } from '../components';
 
 export const ChatScreen: React.FC = () => {
   const modelService = useModelService();
   const insets = useSafeAreaInsets();
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputText, setInputText] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
@@ -150,7 +152,7 @@ export const ChatScreen: React.FC = () => {
         title="LLM Model Required"
         subtitle="Download and load the language model to start chatting"
         icon="chat"
-        accentColor={AppColors.accentCyan}
+        accentColor={colors.accentCyan}
         isDownloading={modelService.isLLMDownloading}
         isLoading={modelService.isLLMLoading}
         isDownloaded={modelService.isLLMDownloaded}
@@ -169,7 +171,7 @@ export const ChatScreen: React.FC = () => {
       {messages.length === 0 ? (
         <View style={styles.emptyState}>
           <View style={styles.emptyIconContainer}>
-            <MessageCircle size={48} color={AppColors.accentCyan} strokeWidth={1.5} />
+            <MessageCircle size={48} color={colors.accentCyan} strokeWidth={1.5} />
           </View>
           <Text style={styles.emptyTitle}>Start a Conversation</Text>
           <Text style={styles.emptySubtitle}>
@@ -210,7 +212,7 @@ export const ChatScreen: React.FC = () => {
           }}
         >
           <LinearGradient
-            colors={[AppColors.btnActiveStart, AppColors.btnActiveEnd]}
+            colors={[colors.btnActiveStart, colors.btnActiveEnd]}
             style={styles.fabGradient}
           >
             <ArrowDown size={24} color="#FFFFFF" strokeWidth={2.5} />
@@ -224,7 +226,7 @@ export const ChatScreen: React.FC = () => {
           <TextInput
             style={styles.input}
             placeholder="Type a message..."
-            placeholderTextColor={AppColors.textMuted}
+            placeholderTextColor={colors.textMuted}
             value={inputText}
             onChangeText={setInputText}
             onSubmitEditing={handleSend}
@@ -234,13 +236,13 @@ export const ChatScreen: React.FC = () => {
           {isGenerating ? (
             <TouchableOpacity onPress={handleStop} style={styles.stopButton}>
               <View style={styles.stopIcon}>
-                <Square size={20} color={AppColors.error} strokeWidth={3} fill={AppColors.error} />
+                <Square size={20} color={colors.error} strokeWidth={3} fill={colors.error} />
               </View>
             </TouchableOpacity>
           ) : (
             <TouchableOpacity onPress={handleSend} disabled={!inputText.trim()}>
               <LinearGradient
-                colors={[AppColors.btnActiveStart, AppColors.btnActiveEnd]}
+                colors={[colors.btnActiveStart, colors.btnActiveEnd]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={styles.sendButton}
@@ -255,128 +257,129 @@ export const ChatScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: AppColors.primaryDark,
-  },
-  messageList: {
-    padding: 16,
-  },
-  emptyState: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 32,
-  },
-  emptyIconContainer: {
-    width: 100,
-    height: 100,
-    backgroundColor: AppColors.accentCyan + '20',
-    borderRadius: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  emptyIcon: {},
-  emptyTitle: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: AppColors.textPrimary,
-    marginBottom: 12,
-  },
-  emptySubtitle: {
-    fontSize: 14,
-    color: AppColors.textSecondary,
-    textAlign: 'center',
-    marginBottom: 32,
-  },
-  suggestionsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    gap: 8,
-  },
-  suggestionChip: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    backgroundColor: AppColors.surfaceCard,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: AppColors.accentCyan + '40',
-  },
-  suggestionText: {
-    fontSize: 12,
-    color: AppColors.textPrimary,
-  },
-  inputContainer: {
-    padding: 16,
-    paddingBottom: 100,
-    backgroundColor: AppColors.surfaceCard + 'CC',
-    borderTopWidth: 1,
-    borderTopColor: AppColors.textMuted + '1A',
-  },
-  inputWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
-  input: {
-    flex: 1,
-    backgroundColor: AppColors.primaryMid,
-    borderRadius: 24,
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    fontSize: 15,
-    color: AppColors.textPrimary,
-    maxHeight: 100,
-  },
-  sendButton: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 4,
-    shadowColor: AppColors.accentCyan,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-  },
-  sendIcon: {},
-  stopButton: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: AppColors.error + '33',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  stopIcon: {
-    width: 48,
-    height: 48,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  stopIconText: {},
-  fab: {
-    position: 'absolute',
-    bottom: 180,
-    right: 20,
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    elevation: 8,
-    shadowColor: AppColors.accentCyan,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-  },
-  fabGradient: {
-    flex: 1,
-    borderRadius: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  fabIcon: {},
-});
+const createStyles = (colors: AppColorsType) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.primaryDark,
+    },
+    messageList: {
+      padding: 16,
+    },
+    emptyState: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 32,
+    },
+    emptyIconContainer: {
+      width: 100,
+      height: 100,
+      backgroundColor: colors.accentCyan + '20',
+      borderRadius: 50,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginBottom: 24,
+    },
+    emptyIcon: {},
+    emptyTitle: {
+      fontSize: 24,
+      fontWeight: '700',
+      color: colors.textPrimary,
+      marginBottom: 12,
+    },
+    emptySubtitle: {
+      fontSize: 14,
+      color: colors.textSecondary,
+      textAlign: 'center',
+      marginBottom: 32,
+    },
+    suggestionsContainer: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: 'center',
+      gap: 8,
+    },
+    suggestionChip: {
+      paddingHorizontal: 16,
+      paddingVertical: 8,
+      backgroundColor: colors.surfaceCard,
+      borderRadius: 20,
+      borderWidth: 1,
+      borderColor: colors.accentCyan + '40',
+    },
+    suggestionText: {
+      fontSize: 12,
+      color: colors.textPrimary,
+    },
+    inputContainer: {
+      padding: 16,
+      paddingBottom: 100,
+      backgroundColor: colors.surfaceCard + 'CC',
+      borderTopWidth: 1,
+      borderTopColor: colors.textMuted + '1A',
+    },
+    inputWrapper: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 12,
+    },
+    input: {
+      flex: 1,
+      backgroundColor: colors.primaryMid,
+      borderRadius: 24,
+      paddingHorizontal: 20,
+      paddingVertical: 12,
+      fontSize: 15,
+      color: colors.textPrimary,
+      maxHeight: 100,
+    },
+    sendButton: {
+      width: 48,
+      height: 48,
+      borderRadius: 24,
+      justifyContent: 'center',
+      alignItems: 'center',
+      elevation: 4,
+      shadowColor: colors.accentCyan,
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.3,
+      shadowRadius: 8,
+    },
+    sendIcon: {},
+    stopButton: {
+      width: 48,
+      height: 48,
+      borderRadius: 24,
+      backgroundColor: colors.error + '33',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    stopIcon: {
+      width: 48,
+      height: 48,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    stopIconText: {},
+    fab: {
+      position: 'absolute',
+      bottom: 180,
+      right: 20,
+      width: 48,
+      height: 48,
+      borderRadius: 24,
+      elevation: 8,
+      shadowColor: colors.accentCyan,
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.3,
+      shadowRadius: 8,
+    },
+    fabGradient: {
+      flex: 1,
+      borderRadius: 24,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    fabIcon: {},
+  });

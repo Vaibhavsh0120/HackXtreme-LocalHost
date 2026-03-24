@@ -14,7 +14,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import RNFS from 'react-native-fs';
 import { RunAnywhere } from '@runanywhere/core';
-import { AppColors } from '../theme';
+import { useAppTheme, type AppColorsType } from '../theme';
 import { useModelService } from '../services/ModelService';
 import { ModelLoaderWidget, PrivacyBadge } from '../components';
 
@@ -31,6 +31,8 @@ const SAMPLE_TEXTS = [
 export const TextToSpeechScreen: React.FC = () => {
   const modelService = useModelService();
   const insets = useSafeAreaInsets();
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   const [text, setText] = useState('');
   const [isSynthesizing, setIsSynthesizing] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -129,7 +131,7 @@ export const TextToSpeechScreen: React.FC = () => {
         title="TTS Voice Required"
         subtitle="Download and load the voice synthesis model"
         icon="volume"
-        accentColor={AppColors.accentPink}
+        accentColor={colors.accentPink}
         isDownloading={modelService.isTTSDownloading}
         isLoading={modelService.isTTSLoading}
         isDownloaded={modelService.isTTSDownloaded}
@@ -152,7 +154,7 @@ export const TextToSpeechScreen: React.FC = () => {
           <TextInput
             style={styles.input}
             placeholder="Enter text to synthesize..."
-            placeholderTextColor={AppColors.textMuted}
+            placeholderTextColor={colors.textMuted}
             value={text}
             onChangeText={setText}
             multiline
@@ -160,7 +162,7 @@ export const TextToSpeechScreen: React.FC = () => {
           />
           <View style={styles.inputFooter}>
             <View style={styles.inputFooterMeta}>
-              <Edit3 size={14} color={AppColors.textMuted} style={styles.editIcon} />
+              <Edit3 size={14} color={colors.textMuted} style={styles.editIcon} />
               <Text style={styles.characterCount}>
                 {text.length} characters
               </Text>
@@ -177,9 +179,9 @@ export const TextToSpeechScreen: React.FC = () => {
         <View style={styles.controlsCard}>
           <Text style={styles.controlLabel}>Speech Rate</Text>
           <View style={styles.sliderContainer}>
-            <Turtle size={24} color={AppColors.textSecondary} />
+            <Turtle size={24} color={colors.textSecondary} />
             <Text style={styles.sliderValue}>{speechRate.toFixed(1)}x</Text>
-            <Rabbit size={24} color={AppColors.textSecondary} />
+            <Rabbit size={24} color={colors.textSecondary} />
           </View>
           <View style={styles.rateButtons}>
             {[0.5, 0.75, 1.0, 1.5, 2.0].map((rate) => (
@@ -223,12 +225,12 @@ export const TextToSpeechScreen: React.FC = () => {
             </>
           ) : isSynthesizing ? (
             <>
-              <Loader2 size={48} color={AppColors.textSecondary} />
+              <Loader2 size={48} color={colors.textSecondary} />
               <Text style={styles.playbackStatus}>Synthesizing...</Text>
             </>
           ) : (
             <>
-              <Volume2 size={48} color={AppColors.textSecondary} style={styles.playbackIconLarge} />
+              <Volume2 size={48} color={colors.textSecondary} style={styles.playbackIconLarge} />
               <Text style={styles.playbackStatus}>Tap to synthesize</Text>
             </>
           )}
@@ -247,7 +249,7 @@ export const TextToSpeechScreen: React.FC = () => {
             style={styles.playButtonWrapper}
           >
             <LinearGradient
-              colors={[AppColors.btnActiveStart, AppColors.btnActiveEnd]}
+              colors={[colors.btnActiveStart, colors.btnActiveEnd]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={styles.playButton}
@@ -275,7 +277,7 @@ export const TextToSpeechScreen: React.FC = () => {
               <Text style={styles.sampleText} numberOfLines={2}>
                 {sample}
               </Text>
-              <Plus size={20} color={AppColors.accentPink + '99'} style={styles.sampleIconOffset} />
+              <Plus size={20} color={colors.accentPink + '99'} style={styles.sampleIconOffset} />
             </TouchableOpacity>
           ))}
         </View>
@@ -284,197 +286,198 @@ export const TextToSpeechScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: AppColors.primaryDark,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    padding: 24,
-    paddingBottom: 100,
-  },
-  inputCard: {
-    backgroundColor: AppColors.surfaceCard,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: AppColors.accentPink + '33',
-    marginBottom: 24,
-    overflow: 'hidden',
-  },
-  input: {
-    padding: 20,
-    fontSize: 15,
-    color: AppColors.textPrimary,
-    minHeight: 120,
-    textAlignVertical: 'top',
-  },
-  inputFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 12,
-    paddingHorizontal: 16,
-    backgroundColor: AppColors.primaryMid,
-  },
-  inputFooterMeta: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  editIcon: {
-    marginRight: 6,
-  },
-  characterCount: {
-    fontSize: 12,
-    color: AppColors.textMuted,
-  },
-  clearText: {
-    fontSize: 14,
-    color: AppColors.accentPink,
-    fontWeight: '600',
-  },
-  controlsCard: {
-    padding: 20,
-    backgroundColor: AppColors.surfaceCard,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: AppColors.textMuted + '1A',
-    marginBottom: 24,
-  },
-  controlLabel: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: AppColors.textPrimary,
-    marginBottom: 16,
-  },
-  sliderContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 16,
-  },
-  sliderIcon: {},
-  sliderValue: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: AppColors.accentPink,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    backgroundColor: AppColors.accentPink + '20',
-    borderRadius: 12,
-  },
-  rateButtons: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  rateButton: {
-    flex: 1,
-    paddingVertical: 8,
-    backgroundColor: AppColors.surfaceElevated,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  rateButtonActive: {
-    backgroundColor: AppColors.accentPink + '40',
-  },
-  rateButtonText: {
-    fontSize: 14,
-    color: AppColors.textSecondary,
-    fontWeight: '600',
-  },
-  rateButtonTextActive: {
-    color: AppColors.accentPink,
-  },
-  playbackArea: {
-    padding: 24,
-    backgroundColor: AppColors.surfaceCard,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: AppColors.textMuted + '1A',
-    alignItems: 'center',
-    marginBottom: 32,
-  },
-  playbackActive: {
-    borderColor: AppColors.accentPink + '80',
-    borderWidth: 2,
-    shadowColor: AppColors.accentPink,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.3,
-    shadowRadius: 20,
-    elevation: 8,
-  },
-  waveform: {
-    flexDirection: 'row',
-    height: 60,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 6,
-    marginBottom: 24,
-  },
-  waveBar: {
-    width: 6,
-    height: 40,
-    backgroundColor: AppColors.accentPink,
-    borderRadius: 3,
-  },
-  playbackIcon: {},
-  loadingIcon: {},
-  playbackIconLarge: {
-    marginBottom: 16,
-  },
-  playbackStatus: {
-    fontSize: 14,
-    color: AppColors.textSecondary,
-    marginBottom: 24,
-  },
-  playButtonWrapper: {
-    marginTop: 8,
-  },
-  playButton: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 8,
-    shadowColor: AppColors.accentPink,
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.4,
-    shadowRadius: 20,
-  },
-  playButtonIcon: {},
-  playIconOffset: {
-    marginLeft: 6,
-  },
-  samplesSection: {
-    marginBottom: 24,
-  },
-  samplesTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: AppColors.textMuted,
-    marginBottom: 12,
-  },
-  sampleItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    backgroundColor: AppColors.surfaceCard + '80',
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: AppColors.textMuted + '1A',
-    marginBottom: 12,
-  },
-  sampleText: {
-    flex: 1,
-    fontSize: 12,
-    color: AppColors.textSecondary,
-    lineHeight: 18,
-  },
-  sampleIcon: {},
-  sampleIconOffset: {
-    marginLeft: 8,
-  },
-});
+const createStyles = (colors: AppColorsType) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.primaryDark,
+    },
+    scrollView: {
+      flex: 1,
+    },
+    scrollContent: {
+      padding: 24,
+      paddingBottom: 100,
+    },
+    inputCard: {
+      backgroundColor: colors.surfaceCard,
+      borderRadius: 20,
+      borderWidth: 1,
+      borderColor: colors.accentPink + '33',
+      marginBottom: 24,
+      overflow: 'hidden',
+    },
+    input: {
+      padding: 20,
+      fontSize: 15,
+      color: colors.textPrimary,
+      minHeight: 120,
+      textAlignVertical: 'top',
+    },
+    inputFooter: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: 12,
+      paddingHorizontal: 16,
+      backgroundColor: colors.primaryMid,
+    },
+    inputFooterMeta: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    editIcon: {
+      marginRight: 6,
+    },
+    characterCount: {
+      fontSize: 12,
+      color: colors.textMuted,
+    },
+    clearText: {
+      fontSize: 14,
+      color: colors.accentPink,
+      fontWeight: '600',
+    },
+    controlsCard: {
+      padding: 20,
+      backgroundColor: colors.surfaceCard,
+      borderRadius: 16,
+      borderWidth: 1,
+      borderColor: colors.textMuted + '1A',
+      marginBottom: 24,
+    },
+    controlLabel: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: colors.textPrimary,
+      marginBottom: 16,
+    },
+    sliderContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginBottom: 16,
+    },
+    sliderIcon: {},
+    sliderValue: {
+      fontSize: 18,
+      fontWeight: '700',
+      color: colors.accentPink,
+      paddingHorizontal: 16,
+      paddingVertical: 8,
+      backgroundColor: colors.accentPink + '20',
+      borderRadius: 12,
+    },
+    rateButtons: {
+      flexDirection: 'row',
+      gap: 8,
+    },
+    rateButton: {
+      flex: 1,
+      paddingVertical: 8,
+      backgroundColor: colors.surfaceElevated,
+      borderRadius: 8,
+      alignItems: 'center',
+    },
+    rateButtonActive: {
+      backgroundColor: colors.accentPink + '40',
+    },
+    rateButtonText: {
+      fontSize: 14,
+      color: colors.textSecondary,
+      fontWeight: '600',
+    },
+    rateButtonTextActive: {
+      color: colors.accentPink,
+    },
+    playbackArea: {
+      padding: 24,
+      backgroundColor: colors.surfaceCard,
+      borderRadius: 20,
+      borderWidth: 1,
+      borderColor: colors.textMuted + '1A',
+      alignItems: 'center',
+      marginBottom: 32,
+    },
+    playbackActive: {
+      borderColor: colors.accentPink + '80',
+      borderWidth: 2,
+      shadowColor: colors.accentPink,
+      shadowOffset: { width: 0, height: 0 },
+      shadowOpacity: 0.3,
+      shadowRadius: 20,
+      elevation: 8,
+    },
+    waveform: {
+      flexDirection: 'row',
+      height: 60,
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: 6,
+      marginBottom: 24,
+    },
+    waveBar: {
+      width: 6,
+      height: 40,
+      backgroundColor: colors.accentPink,
+      borderRadius: 3,
+    },
+    playbackIcon: {},
+    loadingIcon: {},
+    playbackIconLarge: {
+      marginBottom: 16,
+    },
+    playbackStatus: {
+      fontSize: 14,
+      color: colors.textSecondary,
+      marginBottom: 24,
+    },
+    playButtonWrapper: {
+      marginTop: 8,
+    },
+    playButton: {
+      width: 80,
+      height: 80,
+      borderRadius: 40,
+      justifyContent: 'center',
+      alignItems: 'center',
+      elevation: 8,
+      shadowColor: colors.accentPink,
+      shadowOffset: { width: 0, height: 8 },
+      shadowOpacity: 0.4,
+      shadowRadius: 20,
+    },
+    playButtonIcon: {},
+    playIconOffset: {
+      marginLeft: 6,
+    },
+    samplesSection: {
+      marginBottom: 24,
+    },
+    samplesTitle: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: colors.textMuted,
+      marginBottom: 12,
+    },
+    sampleItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      padding: 16,
+      backgroundColor: colors.surfaceCard + '80',
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: colors.textMuted + '1A',
+      marginBottom: 12,
+    },
+    sampleText: {
+      flex: 1,
+      fontSize: 12,
+      color: colors.textSecondary,
+      lineHeight: 18,
+    },
+    sampleIcon: {},
+    sampleIconOffset: {
+      marginLeft: 8,
+    },
+  });
