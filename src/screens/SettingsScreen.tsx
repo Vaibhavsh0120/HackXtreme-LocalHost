@@ -11,6 +11,7 @@ import {
 import { Check, Database, Download, MessageCircle, Mic, Monitor, Moon, Trash2, Volume2, Sun } from 'lucide-react-native';
 import RNFS from 'react-native-fs';
 import { getModelStorageDirectory, useModelService } from '../services/ModelService';
+import { clearConversationHistory } from '../services/ConversationStorage';
 import { useAppTheme, type AppColorsType, type ThemePreference } from '../theme';
 
 type ModelCardProps = {
@@ -164,6 +165,7 @@ export const SettingsScreen: React.FC = () => {
   const [storageSize, setStorageSize] = useState(0);
   const [isCalculating, setIsCalculating] = useState(true);
   const [isClearingAll, setIsClearingAll] = useState(false);
+  const [isClearingChatHistory, setIsClearingChatHistory] = useState(false);
 
   const calculateDirectorySize = useCallback(async (dirPath: string): Promise<number> => {
     try {
@@ -241,6 +243,28 @@ export const SettingsScreen: React.FC = () => {
     );
   };
 
+  const handleDeleteAllChatHistory = () => {
+    Alert.alert(
+      'Delete LLM Chat History',
+      'Remove all saved LLM chat conversations from local storage? Your current empty draft chat will still start fresh.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            setIsClearingChatHistory(true);
+            try {
+              await clearConversationHistory();
+            } finally {
+              setIsClearingChatHistory(false);
+            }
+          },
+        },
+      ],
+    );
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
@@ -311,6 +335,28 @@ export const SettingsScreen: React.FC = () => {
                 <Trash2 size={16} color={colors.error} />
               )}
               <Text style={styles.clearAllText}>Delete all models</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>LLM Chat</Text>
+          <View style={styles.surfaceCard}>
+            <Text style={styles.sectionLabel}>
+              Delete saved chat history for the main LLM Chat screen.
+            </Text>
+
+            <TouchableOpacity
+              style={[styles.clearAllButton, isClearingChatHistory && styles.disabledSecondaryButton]}
+              disabled={isClearingChatHistory}
+              onPress={handleDeleteAllChatHistory}
+            >
+              {isClearingChatHistory ? (
+                <ActivityIndicator size="small" color={colors.error} />
+              ) : (
+                <Trash2 size={16} color={colors.error} />
+              )}
+              <Text style={styles.clearAllText}>Delete all LLM chat history</Text>
             </TouchableOpacity>
           </View>
         </View>

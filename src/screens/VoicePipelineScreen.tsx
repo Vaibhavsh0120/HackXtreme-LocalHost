@@ -352,7 +352,7 @@ export const VoicePipelineScreen: React.FC = () => {
         <View style={[styles.statusArea, isActive && styles.statusActive]}>
           {isActive ? (
             <>
-              <AudioVisualizer level={audioLevel} />
+              <AudioVisualizer level={audioLevel} color={colors.accentGreen} />
               <Text style={[styles.statusText, { color: colors.accentGreen }]}>
                 {status}
               </Text>

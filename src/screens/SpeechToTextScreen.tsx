@@ -194,7 +194,7 @@ export const SpeechToTextScreen: React.FC = () => {
         <View style={[styles.recordingArea, isRecording && styles.recordingActive]}>
           {isRecording ? (
             <>
-              <AudioVisualizer level={audioLevel} />
+              <AudioVisualizer level={audioLevel} color={colors.accentViolet} />
               <Text style={[styles.statusTitle, { color: colors.accentViolet }]}>
                 Listening...
               </Text>

@@ -23,6 +23,8 @@ export const SplashScreen: React.FC = () => {
   const titleOpacity = useRef(new Animated.Value(0)).current;
   const statusOpacity = useRef(new Animated.Value(0)).current;
   const containerOpacity = useRef(new Animated.Value(1)).current;
+  const loadingTranslate = useRef(new Animated.Value(-120)).current;
+  const loadingAnimationRef = useRef<Animated.CompositeAnimation | null>(null);
 
   const loadModelsAndNavigate = useCallback(async () => {
     try {
@@ -33,6 +35,8 @@ export const SplashScreen: React.FC = () => {
 
     // Small delay for visual polish
     await new Promise(resolve => setTimeout(resolve, 400));
+
+    loadingAnimationRef.current?.stop();
 
     // Fade out then navigate
     Animated.timing(containerOpacity, {
@@ -50,6 +54,22 @@ export const SplashScreen: React.FC = () => {
   }, [modelService, navigation, containerOpacity]);
 
   useEffect(() => {
+    loadingAnimationRef.current = Animated.loop(
+      Animated.sequence([
+        Animated.timing(loadingTranslate, {
+          toValue: 120,
+          duration: 900,
+          useNativeDriver: true,
+        }),
+        Animated.timing(loadingTranslate, {
+          toValue: -120,
+          duration: 0,
+          useNativeDriver: true,
+        }),
+      ]),
+    );
+    loadingAnimationRef.current.start();
+
     // Entrance animation sequence
     Animated.sequence([
       // Logo fades in and scales up
@@ -81,6 +101,10 @@ export const SplashScreen: React.FC = () => {
     ]).start(() => {
       loadModelsAndNavigate();
     });
+
+    return () => {
+      loadingAnimationRef.current?.stop();
+    };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
@@ -115,7 +139,12 @@ export const SplashScreen: React.FC = () => {
         {/* Status */}
         <Animated.View style={[styles.statusContainer, { opacity: statusOpacity }]}>
           <View style={styles.loadingBar}>
-            <View style={styles.loadingBarInner} />
+            <Animated.View
+              style={[
+                styles.loadingBarInner,
+                { transform: [{ translateX: loadingTranslate }] },
+              ]}
+            />
           </View>
           <Text style={styles.statusText}>
             {modelService.initializationStatus || 'Initializing...'}
@@ -187,7 +216,7 @@ const createStyles = (colors: AppColorsType) =>
       marginBottom: 16,
     },
     loadingBarInner: {
-      width: '40%',
+      width: 72,
       height: '100%',
       backgroundColor: colors.textSecondary,
       borderRadius: 1,

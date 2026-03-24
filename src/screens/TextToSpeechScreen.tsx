@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Turtle, Rabbit, Volume2, Square, Play, Loader2, Edit3, Plus } from 'lucide-react-native';
 import {
   View,
@@ -16,7 +16,7 @@ import RNFS from 'react-native-fs';
 import { RunAnywhere } from '@runanywhere/core';
 import { useAppTheme, type AppColorsType } from '../theme';
 import { useModelService } from '../services/ModelService';
-import { ModelLoaderWidget, PrivacyBadge } from '../components';
+import { AudioVisualizer, ModelLoaderWidget, PrivacyBadge } from '../components';
 
 // Native Audio Module for better audio session management
 const { NativeAudioModule } = NativeModules;
@@ -38,15 +38,39 @@ export const TextToSpeechScreen: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [speechRate, setSpeechRate] = useState(1.0);
   const [currentAudioPath, setCurrentAudioPath] = useState<string | null>(null);
+  const [playbackLevel, setPlaybackLevel] = useState(0);
+  const playbackIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Cleanup on unmount
   useEffect(() => {
     return () => {
+      if (playbackIntervalRef.current) {
+        clearInterval(playbackIntervalRef.current);
+      }
       if (NativeAudioModule && isPlaying) {
         NativeAudioModule.stopPlayback().catch(() => {});
       }
     };
   }, [isPlaying]);
+
+  const startPlaybackAnimation = () => {
+    if (playbackIntervalRef.current) {
+      clearInterval(playbackIntervalRef.current);
+    }
+
+    setPlaybackLevel(0.55);
+    playbackIntervalRef.current = setInterval(() => {
+      setPlaybackLevel(0.35 + Math.random() * 0.55);
+    }, 120);
+  };
+
+  const stopPlaybackAnimation = () => {
+    if (playbackIntervalRef.current) {
+      clearInterval(playbackIntervalRef.current);
+      playbackIntervalRef.current = null;
+    }
+    setPlaybackLevel(0);
+  };
 
   const synthesizeAndPlay = async () => {
     if (!text.trim()) {
@@ -79,6 +103,7 @@ export const TextToSpeechScreen: React.FC = () => {
       setCurrentAudioPath(tempPath);
       setIsSynthesizing(false);
       setIsPlaying(true);
+      startPlaybackAnimation();
 
       // Play using native audio module
       if (NativeAudioModule) {
@@ -89,6 +114,7 @@ export const TextToSpeechScreen: React.FC = () => {
           // Wait for playback to complete (approximate based on duration)
           setTimeout(() => {
             setIsPlaying(false);
+            stopPlaybackAnimation();
             setCurrentAudioPath(null);
             // Clean up file
             RNFS.unlink(tempPath).catch(() => {});
@@ -96,15 +122,18 @@ export const TextToSpeechScreen: React.FC = () => {
         } catch (playError) {
           console.error('[TTS] Native playback error:', playError);
           setIsPlaying(false);
+          stopPlaybackAnimation();
         }
       } else {
         console.error('[TTS] NativeAudioModule not available');
         setIsPlaying(false);
+        stopPlaybackAnimation();
       }
     } catch (error) {
       console.error('[TTS] Error:', error);
       setIsSynthesizing(false);
       setIsPlaying(false);
+      stopPlaybackAnimation();
     }
   };
 
@@ -117,6 +146,7 @@ export const TextToSpeechScreen: React.FC = () => {
       }
     }
     setIsPlaying(false);
+    stopPlaybackAnimation();
     
     // Clean up file
     if (currentAudioPath) {
@@ -216,11 +246,7 @@ export const TextToSpeechScreen: React.FC = () => {
         <View style={[styles.playbackArea, isPlaying && styles.playbackActive]}>
           {isPlaying ? (
             <>
-              <View style={styles.waveform}>
-                {[...Array(7)].map((_, i) => (
-                  <View key={i} style={styles.waveBar} />
-                ))}
-              </View>
+              <AudioVisualizer level={playbackLevel} color={colors.accentPink} />
               <Text style={styles.playbackStatus}>Playing...</Text>
             </>
           ) : isSynthesizing ? (
@@ -407,20 +433,6 @@ const createStyles = (colors: AppColorsType) =>
       shadowOpacity: 0.3,
       shadowRadius: 20,
       elevation: 8,
-    },
-    waveform: {
-      flexDirection: 'row',
-      height: 60,
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: 6,
-      marginBottom: 24,
-    },
-    waveBar: {
-      width: 6,
-      height: 40,
-      backgroundColor: colors.accentPink,
-      borderRadius: 3,
     },
     playbackIcon: {},
     loadingIcon: {},
