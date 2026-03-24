@@ -46,7 +46,7 @@
     "@react-native/eslint-config": "0.83.1",
     "@react-native/metro-config": "0.83.1",
     "@react-native/typescript-config": "0.83.1",
-    "@types/react": "~19.1.0",
+    "@types/react": "^19.2.0",
     "@types/react-test-renderer": "^18.3.0",
     "eslint": "^8.57.0",
     "prettier": "^3.4.2",
@@ -55,5 +55,8 @@
   },
   "engines": {
     "node": ">=18"
+  },
+  "overrides": {
+    "markdown-it": "^14.1.0"
   }
 }

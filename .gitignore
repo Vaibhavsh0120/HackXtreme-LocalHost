@@ -95,3 +95,4 @@ coverage/
 # Uncomment one:
 # package-lock.json
 # yarn.lock
+/.claude
