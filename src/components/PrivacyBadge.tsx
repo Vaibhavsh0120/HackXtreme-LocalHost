@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { AppColors } from '../theme';
 
 interface PrivacyBadgeProps {
   /** Short context label, e.g. "Chat", "Voice", "Speech" */

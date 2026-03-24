@@ -5,20 +5,18 @@
  * to avoid crashes with react-native-screens on RN 0.83's mandatory New Architecture.
  */
 import React from 'react';
-import { View, Animated } from 'react-native';
+import { View } from 'react-native';
 
 // Simple View wrapper that accepts all props
 const ScreenView = React.forwardRef((props, ref) => {
   const { children, style, enabled, activityState, ...rest } = props;
   return (
-    <View ref={ref} style={[{ flex: 1 }, style]} {...rest}>
+    <View ref={ref} style={style} {...rest}>
       {children}
     </View>
   );
 });
 ScreenView.displayName = 'Screen';
-
-const AnimatedScreenView = Animated.createAnimatedComponent(ScreenView);
 
 // Screen components
 export const Screen = ScreenView;
@@ -39,8 +37,8 @@ export const FullWindowOverlay = ScreenView;
 export const ScreenContext = React.createContext(null);
 
 // Functions
-export const enableScreens = (val) => {};
-export const enableFreeze = (val) => {};
+export const enableScreens = () => {};
+export const enableFreeze = () => {};
 export const screensEnabled = () => false;
 export const shouldUseActivityState = false;
 
@@ -52,7 +50,7 @@ export const useTransitionProgress = () => ({
 });
 
 // Freeze component
-export const Freeze = ({ freeze, children }) => <>{children}</>;
+export const Freeze = ({ children }) => <>{children}</>;
 
 // For native-stack compatibility
 export const NativeScreensModule = null;

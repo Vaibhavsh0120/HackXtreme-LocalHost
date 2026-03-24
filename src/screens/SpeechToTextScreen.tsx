@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Mic, Square, Loader2, Trash2, Clock } from 'lucide-react-native';
+import { Mic, Square, Loader2, Trash2 } from 'lucide-react-native';
 import {
   View,
   Text,
@@ -8,8 +8,6 @@ import {
   StyleSheet,
   NativeModules,
   Alert,
-  Platform,
-  PermissionsAndroid,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
@@ -79,7 +77,7 @@ export const SpeechToTextScreen: React.FC = () => {
           const levelResult = await NativeAudioModule.getAudioLevel();
           setAudioLevel(levelResult.level || 0);
           setRecordingDuration(Date.now() - recordingStartRef.current);
-        } catch (e) {
+        } catch {
           // Ignore errors during polling
         }
       }, 100);
@@ -237,8 +235,8 @@ export const SpeechToTextScreen: React.FC = () => {
           <View style={styles.historySection}>
             <View style={styles.historyHeader}>
               <Text style={styles.historyTitle}>History</Text>
-              <TouchableOpacity onPress={handleClearHistory} style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Trash2 size={16} color={AppColors.accentViolet} style={{ marginRight: 4 }} />
+              <TouchableOpacity onPress={handleClearHistory} style={styles.clearHistoryButton}>
+                <Trash2 size={16} color={AppColors.accentViolet} style={styles.clearHistoryIcon} />
                 <Text style={styles.clearButton}>Clear</Text>
               </TouchableOpacity>
             </View>
@@ -382,6 +380,13 @@ const styles = StyleSheet.create({
   clearButton: {
     fontSize: 14,
     color: AppColors.accentViolet,
+  },
+  clearHistoryButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  clearHistoryIcon: {
+    marginRight: 6,
   },
   historyItem: {
     padding: 16,

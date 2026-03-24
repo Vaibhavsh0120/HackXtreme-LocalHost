@@ -16,8 +16,6 @@ import LinearGradient from 'react-native-linear-gradient';
 import {
   RunAnywhere,
   ToolDefinition,
-  ToolCall,
-  ToolResult,
   ToolCallingResult,
 } from '@runanywhere/core';
 import { AppColors } from '../theme';
@@ -92,10 +90,9 @@ const mockWeather = async (args: Record<string, unknown>) => {
 const mockCalculate = async (args: Record<string, unknown>) => {
   const expr = (args.expression as string) || '0';
   try {
-    // Simple safe eval for basic math
     const sanitized = expr.replace(/[^0-9+\-*/().% ]/g, '');
-    const result = Function(`"use strict"; return (${sanitized})`)();
-    return { expression: expr, result: Number(result) };
+    const result = evaluateMathExpression(sanitized);
+    return { expression: expr, result };
   } catch {
     return { expression: expr, error: 'Could not evaluate expression' };
   }
@@ -123,6 +120,98 @@ interface LogEntry {
   timestamp: Date;
 }
 
+const evaluateMathExpression = (expression: string): number => {
+  const tokens = expression.match(/\d+(?:\.\d+)?|[()+\-*/%]/g);
+  if (!tokens || tokens.join('') !== expression.replace(/\s+/g, '')) {
+    throw new Error('Invalid expression');
+  }
+
+  const precedence: Record<string, number> = {
+    '+': 1,
+    '-': 1,
+    '*': 2,
+    '/': 2,
+    '%': 2,
+  };
+
+  const values: number[] = [];
+  const operators: string[] = [];
+
+  const applyOperator = () => {
+    const operator = operators.pop();
+    const right = values.pop();
+    const left = values.pop();
+
+    if (!operator || left === undefined || right === undefined) {
+      throw new Error('Malformed expression');
+    }
+
+    switch (operator) {
+      case '+':
+        values.push(left + right);
+        break;
+      case '-':
+        values.push(left - right);
+        break;
+      case '*':
+        values.push(left * right);
+        break;
+      case '/':
+        values.push(left / right);
+        break;
+      case '%':
+        values.push(left % right);
+        break;
+      default:
+        throw new Error('Unsupported operator');
+    }
+  };
+
+  for (const token of tokens) {
+    if (!Number.isNaN(Number(token))) {
+      values.push(Number(token));
+      continue;
+    }
+
+    if (token === '(') {
+      operators.push(token);
+      continue;
+    }
+
+    if (token === ')') {
+      while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+        applyOperator();
+      }
+      if (operators.pop() !== '(') {
+        throw new Error('Mismatched parentheses');
+      }
+      continue;
+    }
+
+    while (
+      operators.length > 0 &&
+      operators[operators.length - 1] !== '(' &&
+      precedence[operators[operators.length - 1]] >= precedence[token]
+    ) {
+      applyOperator();
+    }
+    operators.push(token);
+  }
+
+  while (operators.length > 0) {
+    if (operators[operators.length - 1] === '(') {
+      throw new Error('Mismatched parentheses');
+    }
+    applyOperator();
+  }
+
+  if (values.length !== 1) {
+    throw new Error('Malformed expression');
+  }
+
+  return values[0];
+};
+
 // ─── Screen Component ────────────────────────────────────────────
 
 export const ToolCallingScreen: React.FC = () => {
@@ -133,7 +222,6 @@ export const ToolCallingScreen: React.FC = () => {
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [toolsRegistered, setToolsRegistered] = useState(false);
   const scrollRef = useRef<ScrollView>(null);
-  const logIdRef = useRef(0);
 
   // Auto-scroll on new logs
   useEffect(() => {
@@ -302,7 +390,7 @@ export const ToolCallingScreen: React.FC = () => {
       >
         {logs.length === 0 ? (
           <View style={styles.emptyState}>
-            <Wrench size={56} color={AppColors.accentOrange} strokeWidth={1.5} style={{ marginBottom: 16 }} />
+            <Wrench size={56} color={AppColors.accentOrange} strokeWidth={1.5} style={styles.emptyStateIcon} />
             <Text style={styles.emptyTitle}>Tool Calling Test</Text>
             <Text style={styles.emptySubtitle}>
               Register tools, then ask the model to use them.{'\n'}
@@ -471,6 +559,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 80,
+  },
+  emptyStateIcon: {
+    marginBottom: 16,
   },
   emptyIcon: {},
   emptyTitle: {

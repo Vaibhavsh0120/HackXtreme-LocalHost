@@ -39,7 +39,7 @@ export const ChatScreen: React.FC = () => {
         flatListRef.current?.scrollToEnd({ animated: true });
       }, 100);
     }
-  }, [messages, currentResponse]);
+  }, [messages, currentResponse, isScrolledUp]);
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
@@ -129,10 +129,6 @@ export const ChatScreen: React.FC = () => {
       responseRef.current = '';
       setIsGenerating(false);
     }
-  };
-
-  const handleClearChat = () => {
-    setMessages([]);
   };
 
   const renderSuggestionChip = (text: string) => (

@@ -10,10 +10,10 @@ import LinearGradient from 'react-native-linear-gradient';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { AppColors } from '../theme';
 import { FeatureCard } from '../components';
-import { RootStackParamList } from '../navigation/types';
+import { MainTabParamList } from '../navigation/types';
 
 type HomeScreenProps = {
-  navigation: StackNavigationProp<RootStackParamList, 'Home'>;
+  navigation: StackNavigationProp<MainTabParamList>;
 };
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
@@ -112,14 +112,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                 subtitle="LLM Text Generation"
                 icon="chat"
                 gradientColors={[AppColors.accentCyan, '#0EA5E9']}
-                onPress={() => navigation.navigate('Chat')}
+                onPress={() => navigation.navigate('ChatTab')}
               />
               <FeatureCard
                 title="Tools"
                 subtitle="Tool Calling"
                 icon="tools"
                 gradientColors={[AppColors.accentOrange, '#E67E22']}
-                onPress={() => navigation.navigate('ToolCalling')}
+                onPress={() => navigation.navigate('ToolsTab')}
               />
             </View>
             <View style={styles.row}>
@@ -128,14 +128,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                 subtitle="Speech to Text"
                 icon="mic"
                 gradientColors={[AppColors.accentViolet, '#7C3AED']}
-                onPress={() => navigation.navigate('SpeechToText')}
+                onPress={() => navigation.navigate('SpeechTab')}
               />
               <FeatureCard
                 title="Voice"
                 subtitle="Text to Speech"
                 icon="volume"
                 gradientColors={[AppColors.accentPink, '#DB2777']}
-                onPress={() => navigation.navigate('TextToSpeech')}
+                onPress={() => navigation.navigate('VoiceTab')}
               />
             </View>
             <View style={styles.row}>
@@ -144,9 +144,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                 subtitle="Voice Agent"
                 icon="pipeline"
                 gradientColors={[AppColors.accentGreen, '#059669']}
-                onPress={() => navigation.navigate('VoicePipeline')}
+                onPress={() => navigation.navigate('PipelineTab')}
               />
-              <View style={{ flex: 1, margin: 8 }} />
+              <View style={styles.gridSpacer} />
             </View>
           </View>
 
@@ -155,19 +155,19 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
             <View style={styles.infoRow}>
               <Text style={styles.infoIcon}>🤖</Text>
               <Text style={styles.infoLabel}>Text Model</Text>
-              <View style={{ flex: 1 }} />
+              <View style={styles.infoSpacer} />
               <Text style={styles.infoValue}>Smart Text AI</Text>
             </View>
             <View style={styles.infoRow}>
               <Text style={styles.infoIcon}>🎤</Text>
               <Text style={styles.infoLabel}>Transcription</Text>
-              <View style={{ flex: 1 }} />
+              <View style={styles.infoSpacer} />
               <Text style={styles.infoValue}>Quick Voice Recognition</Text>
             </View>
             <View style={styles.infoRow}>
               <Text style={styles.infoIcon}>🔊</Text>
               <Text style={styles.infoLabel}>Speech</Text>
-              <View style={{ flex: 1 }} />
+              <View style={styles.infoSpacer} />
               <Text style={styles.infoValue}>Clear AI Voice</Text>
             </View>
           </View>
@@ -325,6 +325,10 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     gap: 0,
   },
+  gridSpacer: {
+    flex: 1,
+    margin: 8,
+  },
   infoSection: {
     padding: 20,
     backgroundColor: AppColors.surfaceCard + '80',
@@ -336,6 +340,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 8,
+  },
+  infoSpacer: {
+    flex: 1,
   },
   infoIcon: {
     fontSize: 20,

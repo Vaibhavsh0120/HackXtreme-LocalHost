@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import {
   View,
   Text,
@@ -21,6 +21,31 @@ export const SplashScreen: React.FC = () => {
   const titleOpacity = useRef(new Animated.Value(0)).current;
   const statusOpacity = useRef(new Animated.Value(0)).current;
   const containerOpacity = useRef(new Animated.Value(1)).current;
+
+  const loadModelsAndNavigate = useCallback(async () => {
+    try {
+      await modelService.autoLoadDownloadedModels();
+    } catch (e) {
+      console.error('Splash auto-load error:', e);
+    }
+
+    // Small delay for visual polish
+    await new Promise(resolve => setTimeout(resolve, 400));
+
+    // Fade out then navigate
+    Animated.timing(containerOpacity, {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: true,
+    }).start(() => {
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: 'MainTabs' }],
+        })
+      );
+    });
+  }, [modelService, navigation, containerOpacity]);
 
   useEffect(() => {
     // Entrance animation sequence
@@ -52,35 +77,9 @@ export const SplashScreen: React.FC = () => {
         useNativeDriver: true,
       }),
     ]).start(() => {
-      // After animations, start loading models
       loadModelsAndNavigate();
     });
-  }, []);
-
-  const loadModelsAndNavigate = async () => {
-    try {
-      await modelService.autoLoadDownloadedModels();
-    } catch (e) {
-      console.error('Splash auto-load error:', e);
-    }
-
-    // Small delay for visual polish
-    await new Promise(resolve => setTimeout(resolve, 400));
-
-    // Fade out then navigate
-    Animated.timing(containerOpacity, {
-      toValue: 0,
-      duration: 300,
-      useNativeDriver: true,
-    }).start(() => {
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{ name: 'MainTabs' }],
-        })
-      );
-    });
-  };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Animated.View style={[styles.container, { opacity: containerOpacity }]}>

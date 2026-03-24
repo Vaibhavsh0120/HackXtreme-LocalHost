@@ -110,7 +110,7 @@ export const TextToSpeechScreen: React.FC = () => {
     if (NativeAudioModule) {
       try {
         await NativeAudioModule.stopPlayback();
-      } catch (e) {
+      } catch {
         // Ignore
       }
     }
@@ -159,8 +159,8 @@ export const TextToSpeechScreen: React.FC = () => {
             numberOfLines={5}
           />
           <View style={styles.inputFooter}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Edit3 size={14} color={AppColors.textMuted} style={{ marginRight: 6 }} />
+            <View style={styles.inputFooterMeta}>
+              <Edit3 size={14} color={AppColors.textMuted} style={styles.editIcon} />
               <Text style={styles.characterCount}>
                 {text.length} characters
               </Text>
@@ -228,7 +228,7 @@ export const TextToSpeechScreen: React.FC = () => {
             </>
           ) : (
             <>
-              <Volume2 size={48} color={AppColors.textSecondary} style={{ marginBottom: 16 }} />
+              <Volume2 size={48} color={AppColors.textSecondary} style={styles.playbackIconLarge} />
               <Text style={styles.playbackStatus}>Tap to synthesize</Text>
             </>
           )}
@@ -257,7 +257,7 @@ export const TextToSpeechScreen: React.FC = () => {
               ) : isPlaying ? (
                 <Square size={32} color="#FFF" fill="#FFF" />
               ) : (
-                <Play size={32} color="#FFF" fill="#FFF" style={{ marginLeft: 6 }} />
+                <Play size={32} color="#FFF" fill="#FFF" style={styles.playIconOffset} />
               )}
             </LinearGradient>
           </TouchableOpacity>
@@ -275,7 +275,7 @@ export const TextToSpeechScreen: React.FC = () => {
               <Text style={styles.sampleText} numberOfLines={2}>
                 {sample}
               </Text>
-              <Plus size={20} color={AppColors.accentPink + '99'} style={{ marginLeft: 8 }} />
+              <Plus size={20} color={AppColors.accentPink + '99'} style={styles.sampleIconOffset} />
             </TouchableOpacity>
           ))}
         </View>
@@ -318,6 +318,13 @@ const styles = StyleSheet.create({
     padding: 12,
     paddingHorizontal: 16,
     backgroundColor: AppColors.primaryMid,
+  },
+  inputFooterMeta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  editIcon: {
+    marginRight: 6,
   },
   characterCount: {
     fontSize: 12,
@@ -414,6 +421,9 @@ const styles = StyleSheet.create({
   },
   playbackIcon: {},
   loadingIcon: {},
+  playbackIconLarge: {
+    marginBottom: 16,
+  },
   playbackStatus: {
     fontSize: 14,
     color: AppColors.textSecondary,
@@ -435,6 +445,9 @@ const styles = StyleSheet.create({
     shadowRadius: 20,
   },
   playButtonIcon: {},
+  playIconOffset: {
+    marginLeft: 6,
+  },
   samplesSection: {
     marginBottom: 24,
   },
@@ -461,4 +474,7 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
   sampleIcon: {},
+  sampleIconOffset: {
+    marginLeft: 8,
+  },
 });

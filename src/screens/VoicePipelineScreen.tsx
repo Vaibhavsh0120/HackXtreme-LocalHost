@@ -14,7 +14,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import RNFS from 'react-native-fs';
-import { RunAnywhere, VoiceSessionEvent, VoiceSessionHandle } from '@runanywhere/core';
+import { RunAnywhere, VoiceSessionHandle } from '@runanywhere/core';
 import { AppColors } from '../theme';
 import { useModelService } from '../services/ModelService';
 import { ModelLoaderWidget, AudioVisualizer, PrivacyBadge } from '../components';
@@ -25,7 +25,7 @@ let Sound: any = null;
 if (Platform.OS === 'android') {
   try {
     Sound = require('react-native-sound').default;
-  } catch (e) {
+  } catch {
     console.log('react-native-sound not available');
   }
 }
@@ -58,6 +58,44 @@ export const VoicePipelineScreen: React.FC = () => {
   const sessionRef = useRef<VoiceSessionHandle | null>(null);
   const currentSoundRef = useRef<any>(null);
   const isPlayingRef = useRef<boolean>(false);
+
+  const playResponseAudio = useCallback(async (base64Audio: string) => {
+    try {
+      if (Platform.OS === 'ios' && NativeAudioModule) {
+        isPlayingRef.current = true;
+        setAudioLevel(0.8);
+        await NativeAudioModule.playAudioBase64(base64Audio, 22050);
+        isPlayingRef.current = false;
+        setAudioLevel(0.3);
+      } else if (Platform.OS === 'android' && Sound) {
+        const wavData = createWavFromBase64Float32(base64Audio, 22050);
+        const tempPath = `${RNFS.TemporaryDirectoryPath}/voice_response_${Date.now()}.wav`;
+        await RNFS.writeFile(tempPath, wavData, 'base64');
+
+        const sound = new Sound(tempPath, '', (error: any) => {
+          if (error) {
+            console.error('Failed to load sound:', error);
+            return;
+          }
+
+          currentSoundRef.current = sound;
+          setAudioLevel(0.8);
+
+          sound.play((_success: boolean) => {
+            sound.release();
+            currentSoundRef.current = null;
+            setAudioLevel(0.3);
+          });
+        });
+      } else {
+        console.warn('No audio playback module available');
+      }
+    } catch (error) {
+      console.error('Error playing audio:', error);
+      isPlayingRef.current = false;
+      setAudioLevel(0.3);
+    }
+  }, []);
 
   // Handle voice session events per docs:
   // https://docs.runanywhere.ai/react-native/voice-agent#voicesessionevent
@@ -127,8 +165,8 @@ export const VoicePipelineScreen: React.FC = () => {
         // Play audio if provided
         if (event.data?.audio) {
           playResponseAudio(event.data.audio);
-        }
-        break;
+      }
+      break;
         
       case 'speaking':
         setStatus('Speaking...');
@@ -146,48 +184,7 @@ export const VoicePipelineScreen: React.FC = () => {
         console.error('Voice session error:', event.data?.error);
         break;
     }
-  }, []);
-
-  // Play synthesized audio response - platform-specific
-  const playResponseAudio = async (base64Audio: string) => {
-    try {
-      if (Platform.OS === 'ios' && NativeAudioModule) {
-        // iOS: Use NativeAudioModule
-        isPlayingRef.current = true;
-        setAudioLevel(0.8);
-        await NativeAudioModule.playAudioBase64(base64Audio, 22050);
-        isPlayingRef.current = false;
-        setAudioLevel(0.3);
-      } else if (Platform.OS === 'android' && Sound) {
-        // Android: Use react-native-sound
-        const wavData = createWavFromBase64Float32(base64Audio, 22050);
-        const tempPath = `${RNFS.TemporaryDirectoryPath}/voice_response_${Date.now()}.wav`;
-        await RNFS.writeFile(tempPath, wavData, 'base64');
-
-        const sound = new Sound(tempPath, '', (error: any) => {
-          if (error) {
-            console.error('Failed to load sound:', error);
-            return;
-          }
-          
-          currentSoundRef.current = sound;
-          setAudioLevel(0.8);
-          
-          sound.play((success: boolean) => {
-            sound.release();
-            currentSoundRef.current = null;
-            setAudioLevel(0.3);
-          });
-        });
-      } else {
-        console.warn('No audio playback module available');
-      }
-    } catch (error) {
-      console.error('Error playing audio:', error);
-      isPlayingRef.current = false;
-      setAudioLevel(0.3);
-    }
-  };
+  }, [playResponseAudio]);
 
   // Convert base64 float32 PCM to WAV format
   const createWavFromBase64Float32 = (base64Audio: string, sampleRate: number): string => {
@@ -395,9 +392,9 @@ export const VoicePipelineScreen: React.FC = () => {
               >
                 <View style={styles.messageHeader}>
                   {message.role === 'user' ? (
-                    <User size={18} color={AppColors.textSecondary} style={{ marginRight: 8 }} />
+                    <User size={18} color={AppColors.textSecondary} style={styles.messageRoleIcon} />
                   ) : (
-                    <Bot size={18} color={AppColors.textSecondary} style={{ marginRight: 8 }} />
+                    <Bot size={18} color={AppColors.textSecondary} style={styles.messageRoleIcon} />
                   )}
                   <Text style={styles.roleText}>
                     {message.role === 'user' ? 'You' : 'Assistant'}
@@ -559,6 +556,9 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   roleIcon: {},
+  messageRoleIcon: {
+    marginRight: 8,
+  },
   roleText: {
     fontSize: 12,
     fontWeight: '600',

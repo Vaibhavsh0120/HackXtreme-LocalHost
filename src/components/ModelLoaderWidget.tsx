@@ -94,7 +94,7 @@ export const ModelLoaderWidget: React.FC<ModelLoaderWidgetProps> = ({
         )}
 
         <View style={styles.infoBox}>
-          <Lock size={14} color={AppColors.textSecondary} style={{ marginRight: 6 }} />
+          <Lock size={14} color={AppColors.textSecondary} style={styles.infoIcon} />
           <Text style={styles.infoText}>
             All processing happens on your device. Your data never leaves your phone.
           </Text>
@@ -188,6 +188,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  infoIcon: {
+    marginRight: 6,
   },
   infoText: {
     fontSize: 12,
