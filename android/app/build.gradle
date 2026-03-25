@@ -20,6 +20,8 @@ def enableProguardInReleaseBuilds = false
  * The preferred build flavor of JavaScriptCore (JSC)
  */
 def jscFlavor = 'io.github.react-native-community:jsc-android:2026004.+'
+def resolvedVersionCode = (findProperty("androidVersionCode") ?: System.getenv("ANDROID_VERSION_CODE") ?: "1").toString().toInteger()
+def resolvedVersionName = (findProperty("androidVersionName") ?: System.getenv("ANDROID_VERSION_NAME") ?: "1.0").toString()
 
 android {
     ndkVersion rootProject.ext.ndkVersion
@@ -31,8 +33,8 @@ android {
         applicationId "ai.runanywhere.starter"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode resolvedVersionCode
+        versionName resolvedVersionName
     }
     signingConfigs {
         debug {

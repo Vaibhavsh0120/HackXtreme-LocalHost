@@ -84,7 +84,7 @@ if not exist "%SDKMANAGER%" (
 
 echo.
 echo %YELLOW%[5/7] Installing Android dependencies...%RESET%
-
+@REM LATEST SUPPORTED NDK: 28.0.13004108
 if exist "%ANDROID_HOME%\ndk\27.1.12297006" (
     echo %GREEN%NDK already installed%RESET%
 ) else (
