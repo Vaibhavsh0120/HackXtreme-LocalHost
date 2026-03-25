@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
+
 package ai.runanywhere.starter
 
 import android.app.Application
@@ -12,6 +14,7 @@ import com.facebook.react.defaults.DefaultReactNativeHost
 import com.facebook.soloader.SoLoader
 import com.facebook.react.soloader.OpenSourceMergedSoMapping
 
+@Suppress("DEPRECATION")
 class MainApplication : Application(), ReactApplication {
 
   override val reactNativeHost: ReactNativeHost =

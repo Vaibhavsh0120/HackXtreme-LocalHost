@@ -70,7 +70,7 @@ npx react-native run-android
    ```bash
    npm install
    ```
-   > **Note:** This runs `patch-package` automatically via postinstall to apply necessary compatibility fixes.
+   > **Note:** This runs a postinstall fixer that normalizes installed React Native package metadata and applies a few low-risk native warning fixes needed for this project.
 
 3. **iOS Setup**
    ```bash
@@ -78,7 +78,7 @@ npx react-native run-android
    pod install
    cd ..
    ```
-   > **Known Issue (RN 0.83):** The `@runanywhere` SDK packages use `podspecPath` in their React Native config, which the RN 0.83 CLI no longer allows. To work around this, `automaticPodsInstallation` is set to `false` in `react-native.config.js`. This means you **must always run `pod install` manually** (as shown above) before building for iOS. You may see warnings about `podspecPath` when running `run-ios` — these are harmless and can be ignored. This will be fixed in a future SDK release.
+   > **Known Issue (RN 0.83):** The installed `@runanywhere` package configs are normalized during `postinstall` so the RN 0.83 CLI can read them cleanly. `automaticPodsInstallation` is still set to `false` in `react-native.config.js`, so you should **run `pod install` manually** (as shown above) before building for iOS.
 
 4. **Android Setup** (verify your environment)
    
@@ -322,11 +322,11 @@ sdk.dir=/Users/<username>/Library/Android/sdk
 ```
 This file is auto-generated when you open the project in Android Studio.
 
-### Patches not applied
-If you see build errors related to `react-native-nitro-modules`, ensure patches are applied:
+### Postinstall fixes not applied
+If you see React Native config warnings or known native warning regressions after reinstalling dependencies, rerun the postinstall fixer:
 
 ```bash
-npx patch-package
+node postinstall-fixes.js
 ```
 
 This should run automatically via `postinstall`, but you can run it manually if needed.

@@ -108,7 +108,6 @@ if exist "%ANDROID_HOME%\platforms\android-36" (
 
 echo.
 echo %YELLOW%[6/7] Installing npm dependencies...%RESET%
-
 if exist package.json (
     npm install --loglevel=error
     if %ERRORLEVEL%==0 (
@@ -120,6 +119,7 @@ if exist package.json (
 ) else (
     echo %RED%package.json not found%RESET%
 )
+@REM node postinstall-fixes.js
 
 echo.
 echo %YELLOW%[7/7] Running React Native Doctor...%RESET%

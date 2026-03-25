@@ -20,6 +20,34 @@ buildscript {
 
 apply plugin: "com.facebook.react.rootproject"
 
+def suppressedKotlinWarningProjects = [
+    "react-native-gesture-handler",
+    "react-native-permissions",
+    "react-native-safe-area-context",
+    "react-native-screens",
+    "react-native-sound",
+] as Set
+
+def suppressedJavaWarningProjects = [
+    "react-native-fs",
+    "react-native-gesture-handler",
+    "react-native-haptic-feedback",
+    "react-native-linear-gradient",
+    "react-native-live-audio-stream",
+    "react-native-nitro-modules",
+    "react-native-permissions",
+    "react-native-reanimated",
+    "react-native-safe-area-context",
+    "react-native-screens",
+    "react-native-sound",
+    "react-native-svg",
+    "react-native-worklets",
+    "react-native-worklets-core",
+    "runanywhere_core",
+    "runanywhere_llamacpp",
+    "runanywhere_onnx",
+] as Set
+
 // =============================================================================
 // Fix: Force all subprojects to use the same Kotlin stdlib version
 // This prevents version mismatch errors with third-party libraries
@@ -42,6 +70,22 @@ subprojects {
         }
         dependencies {
             classpath("com.android.tools.build:gradle:8.12.0")
+        }
+    }
+
+    if (suppressedKotlinWarningProjects.contains(project.name)) {
+        tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+            kotlinOptions {
+                suppressWarnings = true
+            }
+        }
+    }
+
+    if (suppressedJavaWarningProjects.contains(project.name)) {
+        tasks.withType(JavaCompile).configureEach {
+            options.warnings = false
+            options.deprecation = false
+            options.compilerArgs += ["-Xlint:none", "-nowarn"]
         }
     }
 }
